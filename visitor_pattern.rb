@@ -4,12 +4,25 @@
 module VisitorPattern
   module Visitor
     def visit object, klass=object.class
-      visit_method = visit_method_for klass
-      if self.respond_to? visit_method
-        send visit_method, object
+      raise NoVisitMethodError.new self, object if klass.nil?
+      method = visit_method_for klass
+      if self.respond_to? method
+        send method, object
       else
-        raise NoVisitMethodError.new self, object if klass.nil?
         visit object, klass.superclass
+      end
+    end
+    
+    def self.included visitor
+      visitor.extend VisitMethodDefiner
+    end
+    
+    module VisitMethodDefiner
+      def visitor_for *classes, &block
+        classes.each do |klass|
+          klass.include Visitable
+          define_method (visit_method_for klass), block
+        end
       end
     end
   end
@@ -23,7 +36,7 @@ module VisitorPattern
   class NoVisitMethodError < NoMethodError
     attr_reader :visitor, :visitable
     
-    def initialize visitor, visitable
+   def initialize visitor, visitable
       @visitor   = visitor
       @visitable = visitable
     end
