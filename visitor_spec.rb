@@ -1,4 +1,4 @@
-require './visitor'
+require './visitor_pattern'
 
 include VisitorPattern
 
