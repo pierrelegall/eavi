@@ -1,0 +1,17 @@
+# Global
+
+doc/
+
+# Vim
+
+*.swp
+
+# Emacs
+
+\#*\#
+
+# Eclipse
+
+.buildpath
+.project
+
