@@ -1,23 +1,43 @@
-# require './visitable'
-# require './no_visit_method_error'
+# Author :: Pierre Le Gall (@userdir)
 
+##
+# Contains all necessary tools to apply the visitor pattern easily
 module VisitorPattern
+  ## 
+  # The visitor implementation
   module Visitor
-    def visit object, klass=object.class
+    ##
+    # Method to use to visit an object
+    def visit object
+      visit_method = find_visit_method_for object
+      send visit_method, object
+    end
+    
+    private
+    
+    ##
+    # Recurcive visit method finder
+    def find_visit_method_for object, klass=object.class
       raise NoVisitMethodError.new self, object if klass.nil?
-      method = visit_method_for klass
-      if self.respond_to? method
-        send method, object
+      visit_method = visit_method_for klass
+      if self.respond_to? visit_method
+        return visit_method
       else
-        visit object, klass.superclass
+        find_visit_method_for object, klass.superclass
       end
     end
     
-    def self.included visitor
-      visitor.extend VisitMethodDefiner
+    ##
+    # Auto extend the class by ClassMethods
+    def self.included visitor_class
+      visitor_class.extend ClassMethods
     end
     
-    module VisitMethodDefiner
+    ##
+    # Auto extended module for Visitor
+    module ClassMethods
+      ##
+      # Useful helper to create visit methods
       def visitor_for *classes, &block
         classes.each do |klass|
           klass.include Visitable
@@ -27,26 +47,38 @@ module VisitorPattern
     end
   end
   
+  ##
+  # Module who set the class visitable by a visitor
   module Visitable
+    ##
+    # The accept method of the visitor pattern
     def accept visitor
       visitor.visit self
     end
   end
   
+  ##
+  # Error raise when visit method is not finded in the visitor
   class NoVisitMethodError < NoMethodError
     attr_reader :visitor, :visitable
     
-   def initialize visitor, visitable
+    ##
+    # Constructor
+    def initialize visitor, visitable
       @visitor   = visitor
       @visitable = visitable
     end
     
+    ##
+    # The error message
     def message
       "There is no method to visit #{@visitable.class} " \
       "objects in the #{@visitor.class} class"
     end
   end
   
+  ##
+  # Helper to build the class visit method symbol
   def visit_method_for klass
     method = "visit_#{klass}".gsub(/::/, '_')
     return method.intern
