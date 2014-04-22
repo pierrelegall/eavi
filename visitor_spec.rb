@@ -1,6 +1,7 @@
 require './visitor_pattern'
 
 include VisitorPattern
+include VisitorPattern::VisitorHelper
 
 describe VisitorPattern do
   before :all do
@@ -18,7 +19,7 @@ describe VisitorPattern do
             return String
           end
         end
-        it { (@visitor.respond_to? :visit_String).should be_true }
+        it { @visitor.respond_to?(:visit_String).should be_true }
         it { @visitor.visit(String.new).should == String }
       end
       
@@ -52,4 +53,3 @@ describe VisitorPattern do
     it { visit_method_for(A::B::C).should_not == :'visit_a_b_c' }
   end
 end
-
