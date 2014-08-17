@@ -1,9 +1,6 @@
-require './visitor_pattern'
+require_relative './spec_helper'
 
-include VisitorPattern
-include VisitorPattern::VisitorHelper
-
-describe VisitorPattern do
+describe DesignWizard::VisitorPattern do
   before :all do
     Object.const_set :VisitorTest, Class.new
     VisitorTest.include Visitor
@@ -38,18 +35,18 @@ describe VisitorPattern do
   end
   
   describe '#visit_method_for' do
-    before :all do
+    before do
       Object.const_set :A, Module.new
       A.const_set      :B, Module.new
       A::B.const_set   :C, Class.new
     end
     
-    it { visit_method_for(String).should == :'visit_String' }
-    it { visit_method_for(A::B::C).should == :'visit_A_B_C' }
     it { visit_method_for(String).should_not == :'visit_string' }
     it { visit_method_for(A::B::C).should_not == :'visit_C' }
     it { visit_method_for(A::B::C).should_not == :'visit_A' }
     it { visit_method_for(A::B::C).should_not == :'visit_A_B' }
     it { visit_method_for(A::B::C).should_not == :'visit_a_b_c' }
+    it { visit_method_for(String).should == :'visit_String' }
+    it { visit_method_for(A::B::C).should == :'visit_A_B_C' }
   end
 end
