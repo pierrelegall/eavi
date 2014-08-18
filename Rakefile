@@ -4,7 +4,7 @@ end
 
 namespace :run do
   task :spec do
-    sh %{rspec spec/visitor_pattern_spec.rb}
+    sh %{rspec spec/visitor_pattern_spec.rb --color}
   end
 end
 
