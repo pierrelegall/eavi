@@ -1,52 +1,104 @@
 require_relative './spec_helper'
 
 describe DesignWizard::VisitorPattern do
-  before :all do
-    Object.const_set :VisitorTest, Class.new
-    VisitorTest.include Visitor
-    String.include Visitable
-    @visitor = VisitorTest.new
-  end
-  
-  describe Visitor do
-    describe '#visit' do
-      context 'when visit method exists' do
-        before :all do
-          @visitor.class.send :define_method, :visit_String do |string|
-            return String
-          end
-        end
-        it { @visitor.respond_to?(:visit_String).should be_true }
-        it { @visitor.visit(String.new).should == String }
+  describe Helper do
+    describe '#visit_method_for(String)' do
+      before :all do
+        @result = visit_method_for String
       end
       
-      context 'when visit method does not exist' do
-        it 'raise NoVisitMethodError' do
-          expect { @visitor.visit(Array.new) }.to raise_error NoVisitMethodError
-        end
+      it { expect(@result).to_not eq :'visit' }
+      it { expect(@result).to_not eq :'visit_string' }
+      it { expect(@result).to     eq :'visit_String' }
+    end
+    
+    describe '#visit_method_for(A::B::C)' do
+      before :all do
+        Object.const_set :A, Module.new
+        A.const_set      :B, Module.new
+        A::B.const_set   :C, Class.new
+        @result = visit_method_for A::B::C
       end
+      
+      it { expect(@result).to_not eq :'visit_C' }
+      it { expect(@result).to_not eq :'visit_A' }
+      it { expect(@result).to_not eq :'visit_A_B' }
+      it { expect(@result).to_not eq :'visit_a_b_c' }
+      it { expect(@result).to     eq :'visit_A_B_C' }
     end
   end
   
   describe Visitable do
-    describe '#accept' do
-      # TO DO... no idea :d
+    before :all do
+      Object.const_set :Doritos, Class.new
+      Doritos.include Visitable
+      @doritos = Doritos.new
+    end
+    
+    it 'should respond to #accept' do
+      expect(@doritos.respond_to?(:accept)).to be true
     end
   end
   
-  describe '#visit_method_for' do
-    before do
-      Object.const_set :A, Module.new
-      A.const_set      :B, Module.new
-      A::B.const_set   :C, Class.new
+  describe Visitor do
+    context 'when used as singleton (extend a module)' do
+      before :all do
+        Object.const_set :Page, Class.new
+        Object.const_set :Printer, Module.new
+        Printer.extend Visitor
+      end
+      
+      after :all do
+        Object.send :remove_const, :Page
+        Object.send :remove_const, :Printer
+      end
+      
+      describe '#visit' do
+        context 'when visit method exists' do
+          before :all do
+            Printer.visitor_for Page do |page|
+              'Printing the page'
+            end
+          end
+          
+          it { expect(Printer.respond_to?(:visit_Page)).to be true }
+          it { expect(Printer.visit(Page.new)).to eq 'Printing the page' }
+        end
+        
+        context 'when visit method does not exist' do
+          it 'should raise NoVisitMethodError' do
+            expect { Printer.visit(Array.new) }.to raise_error NoVisitMethodError
+          end
+        end
+      end
     end
     
-    it { visit_method_for(String).should_not == :'visit_string' }
-    it { visit_method_for(A::B::C).should_not == :'visit_C' }
-    it { visit_method_for(A::B::C).should_not == :'visit_A' }
-    it { visit_method_for(A::B::C).should_not == :'visit_A_B' }
-    it { visit_method_for(A::B::C).should_not == :'visit_a_b_c' }
-    it { visit_method_for(String).should == :'visit_String' }
-    it { visit_method_for(A::B::C).should == :'visit_A_B_C' }
+    context 'when used in instances (included in a class)' do
+      before :all do
+        Object.const_set :Page, Class.new
+        Object.const_set :Printer, Class.new
+        Printer.include Visitor
+        @printer = Printer.new
+      end
+      
+      describe '#visit' do
+        context 'when visit method exists' do
+          before :all do
+            @printer.class.visitor_for Page do |page|
+              'Printing the page'
+            end
+          end
+          
+          it { expect(@printer.respond_to?(:visit_Page)).to be true }
+          it { expect(@printer.visit(Page.new)).to eq 'Printing the page' }
+        end
+        
+        context 'when visit method does not exist' do
+          it 'raise NoVisitMethodError' do
+            expect { @printer.visit(Array.new) }.to raise_error NoVisitMethodError
+          end
+        end
+      end
+    end
   end
 end
