@@ -26,7 +26,6 @@ Design Wizart is developed by [Pierre Le Gall][homepage].
 
 ## License
 
-Design Wizard is licensed under [GPLv3][gpl].
+Design Wizard is licensed under the MIT License.
 
 [homepage]: http://legall.io
-[gpl]: http://www.gnu.org/copyleft/gpl.txt
