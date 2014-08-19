@@ -8,5 +8,5 @@ Gem::Specification.new do |s|
   s.email       = 'pierre@legall.io'
   s.files       = ['lib/visitor_pattern.rb']
   s.homepage    = 'http://rubygems.org/gems/uld'
-  s.license     = 'LGPLv3'
+  s.license     = 'MIT'
 end
