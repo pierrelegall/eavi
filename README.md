@@ -2,7 +2,7 @@
 
 Design Wizard is a set of module made to help developers to use design patterns quickly and nicely.
 
-It provide :
+It provides :
 
 - a visitor pattern builder.
 
