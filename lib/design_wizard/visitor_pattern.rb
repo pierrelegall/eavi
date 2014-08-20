@@ -29,18 +29,18 @@ module DesignWizard
     module Visitor
       include Helper
       
-      def visit object
-        visit_as object.class, object
+      def visit object, params={}
+        visit_as object.class, object, params
       end
       
-      def visit_as klass, object
+      def visit_as klass, object, params={}
         raise NoVisitMethodError.new self, object if klass.nil?
         visit_method = visit_method_for klass
         if self.respond_to? visit_method
           send visit_method, object
         else
           visit_as klass.superclass, object
-        end        
+        end
       end
       
       private
@@ -55,7 +55,7 @@ module DesignWizard
       
       module VisitMethodBuilderForInclusion
         include Helper
-
+        
         def visitor_for *classes, &block
           classes.each do |klass|
             klass.include Visitable
