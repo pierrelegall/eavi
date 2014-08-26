@@ -1,25 +1,5 @@
 module DesignWizard
   module VisitorPattern
-    class NoVisitMethodError < NoMethodError
-      attr_reader :visitor, :visitable
-      
-      def initialize visitor, visitable
-        @visitor   = visitor
-        @visitable = visitable
-      end
-      
-      def message
-        "There is no method to visit #{@visitable.class} " \
-        "objects in the #{@visitor.class} class"
-      end
-    end
-    
-    module Helper
-      def visit_method_for klass
-        "visit_#{klass}".gsub(/::/, '_').to_sym
-      end
-    end
-    
     module Visitable
       def accept visitor
         visitor.visit self
@@ -27,8 +7,6 @@ module DesignWizard
     end
     
     module Visitor
-      include Helper
-      
       def visit object, params={}
         visit_as object.class, object, params
       end
@@ -54,8 +32,6 @@ module DesignWizard
       end
       
       module VisitMethodBuilderForInclusion
-        include Helper
-        
         def visitor_for *classes, &block
           classes.each do |klass|
             klass.include Visitable
@@ -72,6 +48,26 @@ module DesignWizard
           end
         end
       end
-    end  
+    end
+
+    class NoVisitMethodError < NoMethodError
+      attr_reader :visitor, :visitable
+      
+      def initialize visitor, visitable
+        @visitor   = visitor
+        @visitable = visitable
+      end
+      
+      def message
+        "There is no method to visit #{@visitable.class} " \
+        "objects in the #{@visitor.class} class"
+      end
+    end
+
+    private
+    
+    def visit_method_for klass
+      "visit_#{klass}".gsub(/::/, '_').to_sym
+    end
   end
 end
