@@ -7,11 +7,11 @@ module DesignWizard
     end
     
     module Visitor
-      def visit object, params={}
-        visit_as object.class, object, params
+      def visit object
+        visit_as object.class, object
       end
       
-      def visit_as klass, object, params={}
+      def visit_as klass, object
         raise NoVisitMethodError.new self, object if klass.nil?
         visit_method = visit_method_for klass
         if self.respond_to? visit_method
