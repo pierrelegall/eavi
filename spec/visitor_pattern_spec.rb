@@ -29,7 +29,7 @@ describe DesignWizard::VisitorPattern do
       describe '#visit' do
         context 'when visit method exists' do
           before :all do
-            Printer.visitor_for Page do |page|
+            Printer.when_visiting Page do |page|
               'Printing the page'
             end
           end
@@ -57,7 +57,7 @@ describe DesignWizard::VisitorPattern do
       describe '#visit' do
         context 'when visit method exists' do
           before :all do
-            @printer.class.visitor_for Page do |page|
+            @printer.class.when_visiting Page do |page|
               'Printing the page'
             end
           end

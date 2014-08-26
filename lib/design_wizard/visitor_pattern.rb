@@ -32,16 +32,16 @@ module DesignWizard
       end
       
       module VisitMethodBuilderForInclusion
-        def visitor_for *classes, &block
+        def when_visiting *classes, &block
           classes.each do |klass|
             klass.include Visitable
             define_method (visit_method_for klass), block
           end
         end
       end
-
+      
       module VisitMethodBuilderForExtension
-        def visitor_for *classes, &block
+        def when_visiting *classes, &block
           classes.each do |klass|
             klass.include Visitable
             define_singleton_method (visit_method_for klass), block
@@ -49,7 +49,7 @@ module DesignWizard
         end
       end
     end
-
+    
     class NoVisitMethodError < NoMethodError
       attr_reader :visitor, :visitable
       
@@ -63,7 +63,7 @@ module DesignWizard
         "objects in the #{@visitor.class} class"
       end
     end
-
+    
     private
     
     def visit_method_for klass
