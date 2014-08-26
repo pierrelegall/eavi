@@ -1,5 +1,11 @@
 module DesignWizard
   module VisitorPattern
+    module MethodBuilder
+      def self.visit_method_for klass
+        "visit_#{klass}".gsub(/::/, '_').to_sym
+      end
+    end
+
     module Visitable
       def accept visitor
         visitor.visit self
@@ -13,7 +19,7 @@ module DesignWizard
       
       def visit_as klass, object
         raise NoVisitMethodError.new self, object if klass.nil?
-        visit_method = visit_method_for klass
+        visit_method = MethodBuilder.visit_method_for klass
         if self.respond_to? visit_method
           true_visit object, visit_method
         else
@@ -37,11 +43,7 @@ module DesignWizard
       def after_visiting_action
         nil
       end
-      
-      def visit_method_for klass
-        "visit_#{klass}".gsub(/::/, '_').to_sym
-      end
-      
+
       def self.included visitor
         visitor.extend VisitMethodBuilderForClasses
       end
@@ -54,7 +56,7 @@ module DesignWizard
         def when_visiting *classes, &block
           classes.each do |klass|
             klass.include Visitable
-            define_method (visit_method_for klass), block
+            define_method (MethodBuilder.visit_method_for klass), block
           end
         end
         
@@ -71,7 +73,7 @@ module DesignWizard
         def when_visiting *classes, &block
           classes.each do |klass|
             klass.include Visitable
-            define_singleton_method (visit_method_for klass), block
+            define_singleton_method (MethodBuilder.visit_method_for klass), block
           end
         end
         
