@@ -15,7 +15,7 @@ module DesignWizard
         raise NoVisitMethodError.new self, object if klass.nil?
         visit_method = visit_method_for klass
         if self.respond_to? visit_method
-          send visit_method, object
+          true_visit object, visit_method
         else
           visit_as klass.superclass, object
         end
@@ -23,29 +23,64 @@ module DesignWizard
       
       private
       
+      def true_visit object, visit_method
+          before_visiting_action
+          result = send visit_method, object
+          after_visiting_action
+          result
+      end
+      
+      def before_visiting_action
+        nil
+      end
+      
+      def after_visiting_action
+        nil
+      end
+      
+      def visit_method_for klass
+        "visit_#{klass}".gsub(/::/, '_').to_sym
+      end
+      
       def self.included visitor
-        visitor.extend VisitMethodBuilderForInclusion
+        visitor.extend VisitMethodBuilderForClasses
       end
       
       def self.extended visitor
-        visitor.extend VisitMethodBuilderForExtension
+        visitor.extend VisitMethodBuilderForModules
       end
       
-      module VisitMethodBuilderForInclusion
+      module VisitMethodBuilderForClasses
         def when_visiting *classes, &block
           classes.each do |klass|
             klass.include Visitable
             define_method (visit_method_for klass), block
           end
         end
+        
+        def before_visiting &block
+          define_method :before_visiting_action, block
+        end
+        
+        def after_visiting &block
+          define_method :after_visiting_action, block
+        end
       end
       
-      module VisitMethodBuilderForExtension
+      module VisitMethodBuilderForModules
         def when_visiting *classes, &block
           classes.each do |klass|
             klass.include Visitable
             define_singleton_method (visit_method_for klass), block
           end
+        end
+        
+        def before_visiting &block
+          define_singleton_method :before_visiting_action, block
+        end
+        
+        def after_visiting &block
+          define_singleton_method :after_visiting_action, block
         end
       end
     end
@@ -62,12 +97,6 @@ module DesignWizard
         "There is no method to visit #{@visitable.class} " \
         "objects in the #{@visitor.class} class"
       end
-    end
-    
-    private
-    
-    def visit_method_for klass
-      "visit_#{klass}".gsub(/::/, '_').to_sym
     end
   end
 end
