@@ -3,8 +3,10 @@ task :doc do
 end
 
 namespace :run do
-  task :spec do
-    sh %{rspec spec/visitor_pattern_spec.rb --color}
+  task :test do
+    Dir.glob("./test/**/*_test.rb") do |test|
+      require_relative test
+    end
   end
 end
 
