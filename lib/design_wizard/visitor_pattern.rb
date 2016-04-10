@@ -1,17 +1,5 @@
 module DesignWizard
   module VisitorPattern
-    module MethodBuilder
-      def self.visit_method_for(klass)
-        "visit_#{klass}".gsub(/::/, '_').to_sym
-      end
-    end
-
-    module Visitable
-      def accept(visitor)
-        visitor.visit self
-      end
-    end
-
     module Visitor
       def visit(object)
         visit_as object.class, object
@@ -19,54 +7,56 @@ module DesignWizard
 
       def visit_as(klass, object)
         raise NoVisitMethodError.new self, object if klass.nil?
-        visit_method = MethodBuilder.visit_method_for klass
-        if self.respond_to? visit_method
-          send visit_method, object
-        else
-          visit_as klass.superclass, object
-        end
+        visit_method = visit_methods[klass]
+        return visit_method.call object unless visit_method.nil?
+        visit_as klass.superclass, object
       end
 
       private
 
+      def visit_methods
+        self.class.visit_methods
+      end
+
       def self.included(visitor)
-        visitor.extend VisitMethodBuilderForClasses
+        visitor.extend ClassMethods
       end
 
       def self.extended(visitor)
-        visitor.extend VisitMethodBuilderForModules
+        visitor.extend ClassMethods
       end
 
-      module VisitMethodBuilderForClasses
-        def when_visiting(*classes, &block)
-          classes.each do |klass|
-            klass.include Visitable
-            define_method (MethodBuilder.visit_method_for klass), block
-          end
+      module ClassMethods
+        def visit_methods
+          return @visit_methods ||= {}
         end
-      end
 
-      module VisitMethodBuilderForModules
-        def when_visiting(*classes, &block)
+        def add_visit_method(*classes, &block)
           classes.each do |klass|
-            klass.include Visitable
-            define_singleton_method (MethodBuilder.visit_method_for klass), block
+            visit_methods[klass] = block
           end
         end
+
+        def remove_visit_method(*classes, &block)
+          classes.each do |klass|
+            visit_methods.delete klass
+          end
+        end
+
+        alias_method :when_visiting, :add_visit_method
       end
     end
 
     class NoVisitMethodError < NoMethodError
-      attr_reader :visitor, :visitable
+      attr_reader :visitor, :visited
 
-      def initialize(visitor, visitable)
-        @visitor   = visitor
-        @visitable = visitable
+      def initialize(visitor, visited)
+        @visitor = visitor
+        @visitable = visited
       end
 
       def message
-        "There is no method to visit #{@visitable.class} " \
-        "objects in the #{@visitor.class} class"
+        "There is no method to visit #{@visited} in #{@visitor}"
       end
     end
   end
