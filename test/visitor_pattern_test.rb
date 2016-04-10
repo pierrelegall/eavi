@@ -10,10 +10,23 @@ class VisitorTest < MiniTest::Test
 
   class Reader
     include Visitor
+
+    when_visiting Page do
+      "Reading"
+    end
   end
 
   module Printer
     extend Visitor
+
+    when_visiting Page do |page|
+      "Printing #{page}"
+    end
+
+    when_visiting String do |string, capitalize|
+      string = string.capitalize if capitalize
+      return string
+    end
   end
 
   def setup
