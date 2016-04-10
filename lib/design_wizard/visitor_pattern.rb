@@ -1,15 +1,14 @@
 module DesignWizard
   module VisitorPattern
     module Visitor
-      def visit(object)
-        visit_as object.class, object
-      end
-
-      def visit_as(klass, object)
-        raise NoVisitMethodError.new self, object if klass.nil?
-        visit_method = visit_methods[klass]
-        return visit_method.call object unless visit_method.nil?
-        visit_as klass.superclass, object
+      def visit(object, as: object.class)
+        as.ancestors.each do |ancestor|
+          visit_method = visit_methods[ancestor]
+          unless visit_method.nil?
+            return visit_method.call object
+          end
+        end
+        raise NoVisitMethodError.new self, object, as
       end
 
       private
@@ -48,15 +47,21 @@ module DesignWizard
     end
 
     class NoVisitMethodError < NoMethodError
-      attr_reader :visitor, :visited
+      attr_reader :visitor, :visited, :visited_as
 
-      def initialize(visitor, visited)
+      def initialize(visitor, visited, visited_as)
         @visitor = visitor
-        @visitable = visited
+        @visited = visited
+        @visited_as = visited_as
       end
 
       def message
-        "There is no method to visit #{@visited} in #{@visitor}"
+        if @visited.class == visited_as
+          "There is no method to visit #{@visited} in #{@visitor}"
+        else
+          "No method found to visit #{@visited} in #{@visitor} " \
+          "when visited as #{visited_as}"
+        end
       end
     end
   end

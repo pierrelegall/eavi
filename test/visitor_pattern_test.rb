@@ -44,22 +44,19 @@ class VisitorPatternTest < MiniTest::Test
     assert_raises NoVisitMethodError do
       Printer.visit("a string")
     end
-  end
-
-  def test_visit_as
-    assert @reader.visit_as(Page, @page) == "Reading the page"
-    assert Printer.visit_as(Page, @page) == "Printing the page"
+    assert @reader.visit(@page, as: Page) == "Reading the page"
+    assert Printer.visit(@page, as: Page) == "Printing the page"
     assert_raises NoVisitMethodError do
-      @reader.visit_as(String, "a string")
+      @reader.visit "a string", as: String
     end
     assert_raises NoVisitMethodError do
-      Printer.visit_as(String, "a string")
+      Printer.visit "a string", as: String
     end
     assert_raises NoVisitMethodError do
-      @reader.visit_as(String, @page)
+      @reader.visit @page, as: String
     end
     assert_raises NoVisitMethodError do
-      Printer.visit_as(String, @page)
+      Printer.visit @page, as: String
     end
   end
 
