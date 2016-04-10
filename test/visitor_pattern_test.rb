@@ -25,30 +25,29 @@ class VisitorTest < MiniTest::Test
 
   def test_visit
     @reader.class.when_visiting Page do
-      "Reading the page"
+      "Reading"
     end
-    assert_equal (@reader.visit @page),
-                 "Reading the page"
+    assert_equal (@reader.visit @page), "Reading"
+
     Printer.when_visiting Page do |page|
-      "Printing the page"
+      "Printing"
     end
-    assert_equal (Printer.visit @page),
-                 "Printing the page"
+    assert_equal (Printer.visit @page), "Printing"
+
+    assert_equal (@reader.visit @page, as: Page), "Reading"
+    assert_equal (Printer.visit @page, as: Page), "Printing"
+
     assert_raises NoVisitActionError do
-      @reader.visit "a string"
-    end
-    assert_raises NoVisitActionError do
-      Printer.visit "a string"
-    end
-    assert_equal (@reader.visit @page, as: Page),
-                 "Reading the page"
-    assert_equal (Printer.visit @page, as: Page),
-                 "Printing the page"
-    assert_raises NoVisitActionError do
-      @reader.visit "a string", as: String
+      @reader.visit "string"
     end
     assert_raises NoVisitActionError do
-      Printer.visit "a string", as: String
+      Printer.visit "string"
+    end
+    assert_raises NoVisitActionError do
+      @reader.visit "string", as: String
+    end
+    assert_raises NoVisitActionError do
+      Printer.visit "string", as: String
     end
     assert_raises NoVisitActionError do
       @reader.visit @page, as: String
@@ -62,21 +61,19 @@ class VisitorTest < MiniTest::Test
     Printer.when_visiting String do |string, *args|
       args
     end
-    assert_equal (Printer.visit"something", 1, 2),
-                 [1, 2]
+    assert_equal (Printer.visit "something", 1, 2), [1, 2]
+
     Printer.when_visiting String do |string, a, b|
       {a: a, b: b}
     end
-    assert_equal (Printer.visit "something", 1, 2),
-                 {a: 1, b: 2}
+    assert_equal (Printer.visit "something", 1, 2), {a: 1, b: 2}
   end
 
   def test_add_visit_action
     Printer.when_visiting Array do
       "Visiting an array"
     end
-    assert_equal (Printer.visit []),
-                 "Visiting an array"
+    assert_equal (Printer.visit []), "Visiting an array"
   end
 
   def test_reset_visit_actions
@@ -89,12 +86,12 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_remove_visit_action
-    Printer.when_visiting Array do
-      "Visiting an array"
+    Printer.when_visiting Page do
+      "Printing"
     end
-    Printer.remove_visit_action Array
+    Printer.remove_visit_action Page
     assert_raises NoVisitActionError do
-      Printer.visit []
+      Printer.visit @page
     end
   end
 end
