@@ -17,14 +17,17 @@ module DesignWizard
         self.class.visit_actions
       end
 
-      def self.included(visitor)
+      def self.initialize(visitor)
         visitor.extend ClassMethods
         visitor.reset_visit_actions
       end
 
+      def self.included(visitor)
+        initialize visitor
+      end
+
       def self.extended(visitor)
-        visitor.extend ClassMethods
-        visitor.reset_visit_actions
+        initialize visitor
       end
 
       module ClassMethods
