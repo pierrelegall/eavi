@@ -19,15 +19,17 @@ module DesignWizard
 
       def self.included(visitor)
         visitor.extend ClassMethods
+        visitor.reset_visit_actions
       end
 
       def self.extended(visitor)
         visitor.extend ClassMethods
+        visitor.reset_visit_actions
       end
 
       module ClassMethods
         def visit_actions
-          return @visit_actions ||= {}
+          @visit_actions
         end
 
         def reset_visit_actions
