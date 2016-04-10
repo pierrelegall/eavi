@@ -72,80 +72,18 @@ class VisitorPatternTest < MiniTest::Test
     assert Printer.visit([]) == "Visiting an array"
   end
 
-  def test_remove_visit_method
+  def test_remove_visit_action
     assert_raises NoMethodError do
-      @reader.remove_visit_method Array do
+      @reader.remove_visit_action Array do
         # some code…
       end
     end
     Printer.when_visiting Array do
       "Visiting an array"
     end
-    Printer.remove_visit_method Array
-    assert_raises NoVisitMethodError do
+    Printer.remove_visit_action Array
+    #assert_raises NoActionMethodError do
       Printer.visit([])
-    end
+    #end
   end
 end
-
-# describe DesignWizard::VisitorPattern do
-#   describe Visitor do
-#     context 'when used as singleton (extend a module)' do
-#       before :all do
-#         Object.const_set :Page, Class.new
-#         Object.const_set :Printer, Module.new
-#         Printer.extend Visitor
-#       end
-
-#       after :all do
-#         Object.send :remove_const, :Page
-#         Object.send :remove_const, :Printer
-#       end
-
-#       describe '#visit' do
-#         context 'when visit method exists' do
-#           before :all do
-#             Printer.when_visiting Page do |page|
-#               'Printing the page'
-#             end
-#           end
-
-#           it { expect(Printer.visit(Page.new)).to eq 'Printing the page' }
-#         end
-
-#         context 'when visit method does not exist' do
-#           it 'should raise NoVisitMethodError' do
-#             expect { Printer.visit(Array.new) }.to raise_error NoVisitMethodError
-#           end
-#         end
-#       end
-#     end
-
-#     context 'when used in instances (included in a class)' do
-#       before :all do
-#         Object.const_set :Page, Class.new
-#         Object.const_set :Printer, Class.new
-#         Printer.include Visitor
-#         @printer = Printer.new
-#       end
-
-#       describe '#visit' do
-#         context 'when visit method exists' do
-#           before :all do
-#             @printer.class.when_visiting Page do |page|
-#               'Printing the page'
-#             end
-#           end
-
-#           it { expect(@printer.visit(Page.new)).to eq 'Printing the page' }
-#         end
-
-#         context 'when visit method does not exist' do
-#           it 'raise NoVisitMethodError' do
-#             expect { @printer.visit(Array.new) }.to raise_error NoVisitMethodError
-#           end
-#         end
-#       end
-#     end
-#   end
-# end
