@@ -41,7 +41,6 @@ class VisitorTest < MiniTest::Test
       "Reading"
     end
     assert_equal (@reader.visit @page), "Reading"
-
     assert_equal (@reader.visit @page, as: Page), "Reading"
 
     assert_raises NoVisitActionError do
@@ -60,7 +59,6 @@ class VisitorTest < MiniTest::Test
       "Printing"
     end
     assert_equal (Printer.visit @page), "Printing"
-
     assert_equal (Printer.visit @page, as: Page), "Printing"
 
     assert_raises NoVisitActionError do
