@@ -15,7 +15,7 @@ class Reader
   end
 end
 
-class Printer
+module Printer
   extend Visitor
 
   when_visiting Page do |page|
