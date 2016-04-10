@@ -60,6 +60,17 @@ class VisitorPatternTest < MiniTest::Test
     end
   end
 
+  def test_visit_with_args
+    Printer.when_visiting String do |string, *args|
+      args
+    end
+    assert (Printer.visit"something", 1, 2) == [1, 2]
+    Printer.when_visiting String do |string, a, b|
+      {a: a, b: b}
+    end
+    assert (Printer.visit "something", 1, 2) == {a: 1, b: 2}
+  end
+
   def test_add_visit_action
     @reader.class.when_visiting Array do
       "Visiting an array"

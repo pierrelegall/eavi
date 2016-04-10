@@ -1,11 +1,11 @@
 module DesignWizard
   module VisitorPattern
     module Visitor
-      def visit(object, as: object.class)
+      def visit(object, *args, as: object.class)
         as.ancestors.each do |ancestor|
           visit_action = visit_actions[ancestor]
           unless visit_action.nil?
-            return visit_action.call object
+            return visit_action.call object, *args
           end
         end
         raise NoVisitActionError.new self, object, as
