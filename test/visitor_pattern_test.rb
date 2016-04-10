@@ -97,9 +97,9 @@ class VisitorTest < MiniTest::Test
     Printer.when_visiting Page do
       "Printing"
     end
-    refute Printer.visit_actions.empty?
+    refute_empty Printer.visit_actions
     Printer.reset_visit_actions
-    assert Printer.visit_actions.empty?
+    assert_empty Printer.visit_actions
   end
 
   def test_remove_visit_action
