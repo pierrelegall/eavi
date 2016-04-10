@@ -23,41 +23,45 @@ class VisitorTest < MiniTest::Test
     Printer.reset_visit_actions
   end
 
-  def test_visit
+  def test_visit__when_included
     @reader.class.when_visiting Page do
       "Reading"
     end
     assert_equal (@reader.visit @page), "Reading"
 
-    Printer.when_visiting Page do |page|
-      "Printing"
-    end
-    assert_equal (Printer.visit @page), "Printing"
-
     assert_equal (@reader.visit @page, as: Page), "Reading"
-    assert_equal (Printer.visit @page, as: Page), "Printing"
 
     assert_raises NoVisitActionError do
       @reader.visit "string"
     end
     assert_raises NoVisitActionError do
-      Printer.visit "string"
-    end
-    assert_raises NoVisitActionError do
       @reader.visit "string", as: String
     end
     assert_raises NoVisitActionError do
-      Printer.visit "string", as: String
+      @reader.visit @page, as: String
+    end
+  end
+
+  def test_visit__when_extended
+    Printer.when_visiting Page do |page|
+      "Printing"
+    end
+    assert_equal (Printer.visit @page), "Printing"
+
+    assert_equal (Printer.visit @page, as: Page), "Printing"
+
+    assert_raises NoVisitActionError do
+      Printer.visit "string"
     end
     assert_raises NoVisitActionError do
-      @reader.visit @page, as: String
+      Printer.visit "string", as: String
     end
     assert_raises NoVisitActionError do
       Printer.visit @page, as: String
     end
   end
 
-  def test_visit_with_args
+  def test_visit__with_args
     Printer.when_visiting String do |string, *args|
       args
     end
