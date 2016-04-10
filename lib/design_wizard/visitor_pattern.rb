@@ -3,18 +3,18 @@ module DesignWizard
     module Visitor
       def visit(object, as: object.class)
         as.ancestors.each do |ancestor|
-          visit_method = visit_methods[ancestor]
-          unless visit_method.nil?
-            return visit_method.call object
+          visit_action = visit_actions[ancestor]
+          unless visit_action.nil?
+            return visit_action.call object
           end
         end
-        raise NoVisitMethodError.new self, object, as
+        raise NoVisitActionError.new self, object, as
       end
 
       private
 
-      def visit_methods
-        self.class.visit_methods
+      def visit_actions
+        self.class.visit_actions
       end
 
       def self.included(visitor)
@@ -26,27 +26,27 @@ module DesignWizard
       end
 
       module ClassMethods
-        def visit_methods
-          return @visit_methods ||= {}
+        def visit_actions
+          return @visit_actions ||= {}
         end
 
-        def add_visit_method(*classes, &block)
+        def add_visit_action(*classes, &block)
           classes.each do |klass|
-            visit_methods[klass] = block
+            visit_actions[klass] = block
           end
         end
 
-        def remove_visit_method(*classes, &block)
+        def remove_visit_action(*classes, &block)
           classes.each do |klass|
-            visit_methods.delete klass
+            visit_actions.delete klass
           end
         end
 
-        alias_method :when_visiting, :add_visit_method
+        alias_method :when_visiting, :add_visit_action
       end
     end
 
-    class NoVisitMethodError < NoMethodError
+    class NoVisitActionError < NoMethodError
       attr_reader :visitor, :visited, :visited_as
 
       def initialize(visitor, visited, visited_as)
@@ -56,12 +56,7 @@ module DesignWizard
       end
 
       def message
-        if @visited.class == visited_as
-          "There is no method to visit #{@visited} in #{@visitor}"
-        else
-          "No method found to visit #{@visited} in #{@visitor} " \
-          "when visited as #{visited_as}"
-        end
+        "no action to visit an instance of #{@visited_as} in #{@visitor}"
       end
     end
   end

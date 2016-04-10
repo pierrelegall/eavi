@@ -38,52 +38,53 @@ class VisitorPatternTest < MiniTest::Test
   def test_visit
     assert @reader.visit(@page) == "Reading the page"
     assert Printer.visit(@page) == "Printing the page"
-    assert_raises NoVisitMethodError do
+    assert_raises NoVisitActionError do
       @reader.visit("a string")
     end
-    assert_raises NoVisitMethodError do
+    assert_raises NoVisitActionError do
       Printer.visit("a string")
     end
     assert @reader.visit(@page, as: Page) == "Reading the page"
     assert Printer.visit(@page, as: Page) == "Printing the page"
-    assert_raises NoVisitMethodError do
+    assert_raises NoVisitActionError do
       @reader.visit "a string", as: String
     end
-    assert_raises NoVisitMethodError do
+    assert_raises NoVisitActionError do
       Printer.visit "a string", as: String
     end
-    assert_raises NoVisitMethodError do
+    assert_raises NoVisitActionError do
       @reader.visit @page, as: String
     end
-    assert_raises NoVisitMethodError do
+    assert_raises NoVisitActionError do
       Printer.visit @page, as: String
     end
   end
 
-  def test_add_visit_method
-    assert_raises NoMethodError do
-      @reader.when_visiting Array do
-        # some code…
-      end
+  def test_add_visit_action
+    @reader.class.when_visiting Array do
+      "Visiting an array"
     end
-    Printer.when_visiting Array do
+      Printer.when_visiting Array do
       "Visiting an array"
     end
     assert Printer.visit([]) == "Visiting an array"
   end
 
   def test_remove_visit_action
-    assert_raises NoMethodError do
-      @reader.remove_visit_action Array do
-        # some code…
-      end
+    @reader.class.remove_visit_action Array
+    @reader.class.add_visit_action Array do
+      "Visiting an array"
+    end
+    @reader.class.remove_visit_action Array
+    assert_raises NoVisitActionError do
+      @reader.visit([])
     end
     Printer.when_visiting Array do
       "Visiting an array"
     end
     Printer.remove_visit_action Array
-    #assert_raises NoActionMethodError do
+    assert_raises NoVisitActionError do
       Printer.visit([])
-    #end
+    end
   end
 end
