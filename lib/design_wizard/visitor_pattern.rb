@@ -30,6 +30,10 @@ module DesignWizard
           return @visit_actions ||= {}
         end
 
+        def reset_visit_actions
+          @visit_actions = {}
+        end
+
         def add_visit_action(*classes, &block)
           classes.each do |klass|
             visit_actions[klass] = block

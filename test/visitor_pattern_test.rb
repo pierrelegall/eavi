@@ -4,34 +4,34 @@ require_relative '../lib/design_wizard/visitor_pattern'
 
 include DesignWizard::VisitorPattern
 
-class Page
-end
-
-class Reader
-  include Visitor
-
-  when_visiting Page do |page|
-    "Reading the page"
+class VisitorTest < MiniTest::Test
+  class Page
   end
-end
 
-module Printer
-  extend Visitor
-
-  when_visiting Page do |page|
-    "Printing the page"
+  class Reader
+    include Visitor
   end
-end
 
-class VisitorPatternTest < MiniTest::Test
+  module Printer
+    extend Visitor
+  end
+
   def setup
     @page = Page.new
     @reader = Reader.new
+    Reader.reset_visit_actions
+    Printer.reset_visit_actions
   end
 
   def test_visit
+    @reader.class.when_visiting Page do
+      "Reading the page"
+    end
     assert_equal (@reader.visit @page),
                  "Reading the page"
+    Printer.when_visiting Page do |page|
+      "Printing the page"
+    end
     assert_equal (Printer.visit @page),
                  "Printing the page"
     assert_raises NoVisitActionError do
@@ -77,6 +77,15 @@ class VisitorPatternTest < MiniTest::Test
     end
     assert_equal (Printer.visit []),
                  "Visiting an array"
+  end
+
+  def test_reset_visit_actions
+    Printer.when_visiting Page do
+      "Printing"
+    end
+    refute Printer.visit_actions.empty?
+    Printer.reset_visit_actions
+    assert Printer.visit_actions.empty?
   end
 
   def test_remove_visit_action
