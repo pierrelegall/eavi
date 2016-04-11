@@ -5,7 +5,7 @@ module DesignWizard
         as.ancestors.each do |ancestor|
           visit_action = visit_actions[ancestor]
           unless visit_action.nil?
-            return visit_action.call object, *args
+            return instance_exec(object, *args, &visit_action)
           end
         end
         raise NoVisitActionError.new self, object, as

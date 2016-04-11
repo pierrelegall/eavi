@@ -52,6 +52,11 @@ class VisitorTest < MiniTest::Test
     assert_raises NoVisitActionError do
       @reader.visit @page, as: String
     end
+
+    @reader.class.when_visiting Page do |page|
+      self
+    end
+    assert_same (@reader.visit @page), @reader
   end
 
   def test_visit__when_extended
@@ -70,6 +75,11 @@ class VisitorTest < MiniTest::Test
     assert_raises NoVisitActionError do
       Printer.visit @page, as: String
     end
+
+    Printer.when_visiting Page do |page|
+      self
+    end
+    assert_same (Printer.visit @page), Printer
   end
 
   def test_visit__with_args
