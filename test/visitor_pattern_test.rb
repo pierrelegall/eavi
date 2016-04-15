@@ -16,7 +16,7 @@ class VisitorTest < MiniTest::Test
     end
   end
 
-  module Printer
+  class Printer
     extend Visitor
 
     when_visiting Page do |page|
@@ -27,6 +27,12 @@ class VisitorTest < MiniTest::Test
       string = string.capitalize if capitalize
       return string
     end
+  end
+
+  class NewReader < Reader
+  end
+
+  class NewPrinter < Printer
   end
 
   def setup
@@ -92,6 +98,19 @@ class VisitorTest < MiniTest::Test
       {a: a, b: b}
     end
     assert_equal (Printer.visit "something", 1, 2), {a: 1, b: 2}
+  end
+
+  def test_visit__with_inheritance
+    Reader.when_visiting Page do
+      "Reading"
+    end
+    new_reader = NewReader.new
+    assert_equal (new_reader.visit @page), "Reading"
+
+    Printer.when_visiting Page do
+      "Printing"
+    end
+    assert_equal (NewPrinter.visit @page), "Printing"
   end
 
   def test_add_visit_action

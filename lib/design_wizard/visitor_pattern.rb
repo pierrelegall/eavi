@@ -3,7 +3,7 @@ module DesignWizard
     module Visitor
       def visit(object, *args, as: object.class)
         as.ancestors.each do |ancestor|
-          visit_action = visit_actions[ancestor]
+          visit_action = visit_action_for ancestor
           unless visit_action.nil?
             return instance_exec(object, *args, &visit_action)
           end
@@ -13,28 +13,33 @@ module DesignWizard
 
       private
 
-      def visit_actions
-        self.class.visit_actions
+      def visit_action_for(ancestor)
+        return self.class.visit_action_for ancestor
       end
 
       class << self
-        def initialize(visitor)
-          visitor.extend ClassMethods
-          visitor.reset_visit_actions
-        end
-
         def included(visitor)
-          initialize visitor
+          visitor.extend ClassMethods
         end
 
         def extended(visitor)
-          initialize visitor
+          visitor.extend ClassMethods
         end
       end
 
       module ClassMethods
         def visit_actions
-          @visit_actions
+          return @visit_actions ||= {}
+        end
+
+        def visit_action_for(klass)
+          visit_action = visit_actions[klass]
+          up = superclass
+          while visit_action.nil? and up.respond_to? :visit_actions
+            up = superclass
+            visit_action = up.visit_actions[klass]
+          end
+          return visit_action
         end
 
         def reset_visit_actions
