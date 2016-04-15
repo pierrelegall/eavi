@@ -1,5 +1,7 @@
-task :doc do
-  sh %{rdoc --all --one-file}
+namespace :generate do
+  task :doc do
+    sh %{rdoc --ri}
+  end
 end
 
 namespace :run do
