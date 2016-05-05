@@ -1,6 +1,6 @@
 require_relative '../lib/design_wizard/visitor_pattern'
 
-include DesignWizard::VisitorPattern
+include Risitor
 
 class Reader
   include Visitor
