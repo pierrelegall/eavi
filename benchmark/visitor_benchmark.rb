@@ -1,4 +1,4 @@
-require_relative '../lib/design_wizard/visitor_pattern'
+require_relative '../lib/risitor/visitor'
 
 include Risitor
 
