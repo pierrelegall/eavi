@@ -38,8 +38,8 @@ class VisitorTest < MiniTest::Test
   def setup
     @page = Page.new
     @reader = Reader.new
-    Reader.reset_visit_actions
-    Printer.reset_visit_actions
+    Reader.reset_visit_methods
+    Printer.reset_visit_methods
   end
 
   def test_visit__when_included
@@ -49,13 +49,13 @@ class VisitorTest < MiniTest::Test
     assert_equal (@reader.visit @page), "Reading"
     assert_equal (@reader.visit @page, as: Page), "Reading"
 
-    assert_raises NoVisitActionError do
+    assert_raises NoVisitMethodError do
       @reader.visit "string"
     end
-    assert_raises NoVisitActionError do
+    assert_raises NoVisitMethodError do
       @reader.visit "string", as: String
     end
-    assert_raises NoVisitActionError do
+    assert_raises NoVisitMethodError do
       @reader.visit @page, as: String
     end
 
@@ -72,13 +72,13 @@ class VisitorTest < MiniTest::Test
     assert_equal (Printer.visit @page), "Printing"
     assert_equal (Printer.visit @page, as: Page), "Printing"
 
-    assert_raises NoVisitActionError do
+    assert_raises NoVisitMethodError do
       Printer.visit "string"
     end
-    assert_raises NoVisitActionError do
+    assert_raises NoVisitMethodError do
       Printer.visit "string", as: String
     end
-    assert_raises NoVisitActionError do
+    assert_raises NoVisitMethodError do
       Printer.visit @page, as: String
     end
 
@@ -101,41 +101,41 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_visit__with_inheritance
-    Reader.when_visiting Page do
+    Reader.when_visiting Page do |page|
       "Reading"
     end
     new_reader = NewReader.new
     assert_equal (new_reader.visit @page), "Reading"
 
-    Printer.when_visiting Page do
+    Printer.when_visiting Page do |page|
       "Printing"
     end
     assert_equal (NewPrinter.visit @page), "Printing"
   end
 
-  def test_add_visit_action
-    Printer.when_visiting Array do
+  def test_add_visit_methods
+    Printer.when_visiting Array do |array|
       "Visiting an array"
     end
     assert_equal (Printer.visit []), "Visiting an array"
   end
 
-  def test_reset_visit_actions
-    Printer.when_visiting Page do
+  def test_remove_visit_methods
+    Printer.when_visiting Page do |page|
       "Printing"
     end
-    refute_empty Printer.visit_actions
-    Printer.reset_visit_actions
-    assert_empty Printer.visit_actions
-  end
-
-  def test_remove_visit_action
-    Printer.when_visiting Page do
-      "Printing"
-    end
-    Printer.remove_visit_action Page
-    assert_raises NoVisitActionError do
+    Printer.remove_visit_method Page
+    assert_raises NoVisitMethodError do |page|
       Printer.visit @page
     end
+  end
+
+  def test_reset_visit_methods
+    Printer.when_visiting Page do
+      "Printing"
+    end
+    refute_empty Printer.visit_methods
+    Printer.reset_visit_methods
+    assert_empty Printer.visit_methods
   end
 end

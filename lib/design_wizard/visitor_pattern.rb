@@ -3,66 +3,100 @@ module DesignWizard
     module Visitor
       def visit(object, *args, as: object.class)
         as.ancestors.each do |ancestor|
-          visit_action = visit_action_for ancestor
-          unless visit_action.nil?
-            return instance_exec(object, *args, &visit_action)
+          visit_method = VisitMethodHelper.gen_name(ancestor)
+          if respond_to? visit_method
+            return send(visit_method, object, *args)
           end
         end
-        raise NoVisitActionError.new self, object, as
+        raise NoVisitMethodError.new(self, object, as)
       end
 
       private
 
-      def visit_action_for(ancestor)
-        return self.class.visit_action_for ancestor
-      end
-
       class << self
         def included(visitor)
           visitor.extend ClassMethods
+          visitor.extend ClassMethodsWhenIncluded
         end
 
         def extended(visitor)
           visitor.extend ClassMethods
+          visitor.extend ClassMethodsWhenExtended
         end
       end
 
       module ClassMethods
-        def visit_actions
-          return @visit_actions ||= {}
-        end
-
-        def visit_action_for(klass)
-          visit_action = visit_actions[klass]
-          up = superclass
-          while visit_action.nil? and up.respond_to? :visit_actions
-            up = superclass
-            visit_action = up.visit_actions[klass]
-          end
-          return visit_action
-        end
-
-        def reset_visit_actions
-          @visit_actions = {}
-        end
-
-        def add_visit_action(*classes, &block)
+        def add_visit_method(*classes, &block)
+          block = block.curry(1) if block.arity == 0
           classes.each do |klass|
-            visit_actions[klass] = block
+            define_visit_method_for klass, &block
           end
         end
 
-        def remove_visit_action(*classes, &block)
+        def remove_visit_method(*classes)
           classes.each do |klass|
-            visit_actions.delete klass
+            undefine_visit_method_for klass
           end
         end
 
-        alias_method :when_visiting, :add_visit_action
+        def reset_visit_methods
+          visit_methods.each do |visit_method|
+            undefine_visit_method visit_method
+          end
+        end
+
+        def visit_methods
+          return methods.select do |method|
+            VisitMethodHelper.match method
+          end
+        end
+
+        alias_method :when_visiting, :add_visit_method
+      end
+
+      module ClassMethodsWhenIncluded
+        def define_visit_method_for(klass, &block)
+          define_method VisitMethodHelper.gen_name(klass), block
+        end
+
+        def undefine_visit_method_for(klass)
+          remove_method VisitMethodHelper.gen_name(klass)
+        end
+
+        def undefine_visit_method(visit_method)
+          remove_method visit_method
+        end
+      end
+
+      module ClassMethodsWhenExtended
+        def define_visit_method_for(klass, &block)
+          define_singleton_method VisitMethodHelper.gen_name(klass), block
+        end
+
+        def undefine_visit_method_for(klass)
+          self.singleton_class.send :remove_method, VisitMethodHelper.gen_name(klass)
+        end
+
+        def undefine_visit_method(visit_method)
+          self.singleton_class.send :remove_method, visit_method
+        end
       end
     end
 
-    class NoVisitActionError < NoMethodError
+    module VisitMethodHelper
+      @template = "visit[%s]"
+      @regexp = /^visit\[.*\]$/
+
+      def self.gen_name(klass)
+        return @template % klass
+      end
+
+      def self.match(visit_method_name)
+        return @regexp.match visit_method_name
+      end
+    end
+
+    class NoVisitMethodError < NoMethodError
       attr_reader :visitor, :visited, :visited_as
 
       def initialize(visitor, visited, visited_as)
@@ -72,7 +106,7 @@ module DesignWizard
       end
 
       def message
-        "no action to visit an instance of #{@visited_as} in #{@visitor}"
+        "no method in #{@visitor} to visit as #{@visited_as}"
       end
     end
   end
