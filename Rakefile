@@ -24,3 +24,6 @@ namespace :clean do
     sh %{rm -rf doc/}
   end
 end
+
+task :t => "run:test"
+task :b => "run:benchmark"
