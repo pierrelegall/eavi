@@ -14,7 +14,7 @@ end
 
 namespace :generate do
   task :doc do
-    `rdoc --ri`
+    `rdoc lib/ --ri`
   end
 end
 
