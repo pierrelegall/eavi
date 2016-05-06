@@ -10,6 +10,12 @@ namespace :run do
       require_relative test
     end
   end
+
+  task :benchmark do
+    Dir.glob("./benchmark/**/*_benchmark.rb") do |benchmark|
+      require_relative benchmark
+    end
+  end
 end
 
 namespace :clean do
