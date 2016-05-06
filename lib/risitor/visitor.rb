@@ -4,8 +4,8 @@ require_relative './visit_method_helper'
 module Risitor
   module Visitor
     def visit(object, *args, as: object.class)
-      as.ancestors.each do |ancestor|
-        visit_method = VisitMethodHelper.gen_name(ancestor)
+      as.ancestors.each do |type|
+        visit_method = VisitMethodHelper.gen_name(type)
         if respond_to? visit_method
           return send(visit_method, object, *args)
         end
@@ -18,16 +18,16 @@ module Risitor
         define_new_visit_method(visit_method_alias)
       end
 
-      def add_visit_method(*classes, &block)
+      def add_visit_method(*types, &block)
         block = block.curry(1) if block.arity == 0
-        classes.each do |klass|
-          define_visit_method_for klass, &block
+        types.each do |type|
+          define_visit_method_for type, &block
         end
       end
 
-      def remove_visit_method(*classes)
-        classes.each do |klass|
-          undefine_visit_method_for klass
+      def remove_visit_method(*types)
+        types.each do |type|
+          undefine_visit_method_for type
         end
       end
 
