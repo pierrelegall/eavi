@@ -111,6 +111,16 @@ class VisitorTest < MiniTest::Test
     assert_equal (NewPrinter.visit @page), "Printing"
   end
 
+  def test_alias_visit_method
+    Printer.when_visiting Page do; end
+    Printer.send :alias_visit_method, :print
+    Printer.print @page
+
+    Reader.when_visiting Page do; end
+    Reader.send :alias_visit_method, :read
+    @reader.read @page
+  end
+
   def test_add_visit_methods
     Printer.when_visiting Array do |array|
       "Visiting an array"

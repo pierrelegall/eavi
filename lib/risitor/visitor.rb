@@ -16,6 +16,10 @@ module Risitor
     private
 
     module ClassMethods
+      def alias_visit_method(visit_method_alias)
+        define_new_visit_method(visit_method_alias)
+      end
+
       def add_visit_method(*classes, &block)
         block = block.curry(1) if block.arity == 0
         classes.each do |klass|
@@ -47,6 +51,10 @@ module Risitor
     module ClassMethodsWhenIncluded
       private
 
+      def define_new_visit_method(new_visit_method)
+        define_method new_visit_method, instance_method(:visit)
+      end
+
       def define_visit_method_for(klass, &block)
         define_method VisitMethodHelper.gen_name(klass), block
       end
@@ -62,6 +70,10 @@ module Risitor
 
     module ClassMethodsWhenExtended
       private
+
+      def define_new_visit_method(new_visit_method)
+        define_singleton_method new_visit_method, method(:visit)
+      end
 
       def define_visit_method_for(klass, &block)
         define_singleton_method VisitMethodHelper.gen_name(klass), block
