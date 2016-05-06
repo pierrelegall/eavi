@@ -1,3 +1,5 @@
+require_relative './visit_method_helper'
+
 module Risitor
   module Visitor
     def visit(object, *args, as: object.class)
@@ -83,19 +85,6 @@ module Risitor
         visitor.extend ClassMethods
         visitor.extend ClassMethodsWhenExtended
       end
-    end
-  end
-
-  module VisitMethodHelper
-    TEMPLATE = "visit[%s]"
-    REGEXP = /^visit\[.*\]$/
-
-    def self.gen_name(klass)
-      return TEMPLATE % klass
-    end
-
-    def self.match(visit_method_name)
-      return REGEXP.match visit_method_name
     end
   end
 
