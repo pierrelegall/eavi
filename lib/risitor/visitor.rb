@@ -43,6 +43,12 @@ module Risitor
         end
       end
 
+      def visitable_types
+        return visit_methods.collect do |visit_method|
+          VisitMethodHelper.get_type(visit_method)
+        end
+      end
+
       alias_method :when_visiting, :add_visit_method
     end
 

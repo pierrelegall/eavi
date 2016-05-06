@@ -146,4 +146,9 @@ class VisitorTest < MiniTest::Test
     Printer.reset_visit_methods
     assert_empty Printer.visit_methods
   end
+
+  def test_visitable_types
+    Printer.when_visiting String, Array, Hash do; end
+    assert_equal Printer.visitable_types, [String, Array, Hash]
+  end
 end
