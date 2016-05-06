@@ -47,8 +47,6 @@ module Risitor
     end
 
     module ClassMethodsWhenIncluded
-    private
-
       private
 
       def define_new_visit_method(new_visit_method)
