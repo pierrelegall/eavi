@@ -2,14 +2,12 @@ require 'minitest/autorun'
 
 require_relative '../lib/risitor/visitor'
 
-include Risitor
-
 class VisitorTest < MiniTest::Test
   class Page
   end
 
   class Reader
-    include Visitor
+    include Risitor::Base
 
     when_visiting Page do
       "Reading"
@@ -17,7 +15,7 @@ class VisitorTest < MiniTest::Test
   end
 
   class Printer
-    extend Visitor
+    extend Risitor::Base
 
     when_visiting Page do |page|
       "Printing #{page}"
@@ -49,13 +47,13 @@ class VisitorTest < MiniTest::Test
     assert_equal (@reader.visit @page), "Reading"
     assert_equal (@reader.visit @page, as: Page), "Reading"
 
-    assert_raises NoVisitMethodError do
+    assert_raises Risitor::NoVisitMethodError do
       @reader.visit "string"
     end
-    assert_raises NoVisitMethodError do
+    assert_raises Risitor::NoVisitMethodError do
       @reader.visit "string", as: String
     end
-    assert_raises NoVisitMethodError do
+    assert_raises Risitor::NoVisitMethodError do
       @reader.visit @page, as: String
     end
 
@@ -72,13 +70,13 @@ class VisitorTest < MiniTest::Test
     assert_equal (Printer.visit @page), "Printing"
     assert_equal (Printer.visit @page, as: Page), "Printing"
 
-    assert_raises NoVisitMethodError do
+    assert_raises Risitor::NoVisitMethodError do
       Printer.visit "string"
     end
-    assert_raises NoVisitMethodError do
+    assert_raises Risitor::NoVisitMethodError do
       Printer.visit "string", as: String
     end
-    assert_raises NoVisitMethodError do
+    assert_raises Risitor::NoVisitMethodError do
       Printer.visit @page, as: String
     end
 
@@ -125,7 +123,7 @@ class VisitorTest < MiniTest::Test
       "Printing"
     end
     Printer.remove_visit_method Page
-    assert_raises NoVisitMethodError do |page|
+    assert_raises Risitor::NoVisitMethodError do |page|
       Printer.visit @page
     end
   end

@@ -112,4 +112,6 @@ module Risitor
       "no method in #{@visitor} to visit as #{@visited_as}"
     end
   end
+
+  Base = Visitor
 end
