@@ -2,8 +2,6 @@ require_relative '../lib/risitor/visitor'
 
 require 'benchmark'
 
-include Risitor
-
 puts "This benchmark compare the speed of " \
      "a visit call and a standard method call."
 puts ""
@@ -16,7 +14,7 @@ class Page4 < Page3; end
 class Page5 < Page4; end
 
 class Printer
-  extend Visitor
+  extend Risitor::Base
 
   when_visiting Page0 do |page|
     "Printing #{page}"
@@ -28,7 +26,7 @@ class Printer
 end
 
 class Reader
-  include Visitor
+  include Risitor::Base
 
   when_visiting Page0 do |page|
     "Reading #{page}"
