@@ -1,9 +1,3 @@
-namespace :generate do
-  task :doc do
-    sh %{rdoc --ri}
-  end
-end
-
 namespace :run do
   task :test do
     Dir.glob("./test/**/*_test.rb") do |test|
@@ -15,6 +9,12 @@ namespace :run do
     Dir.glob("./benchmark/**/*_benchmark.rb") do |benchmark|
       require_relative benchmark
     end
+  end
+end
+
+namespace :generate do
+  task :doc do
+    `rdoc --ri`
   end
 end
 
