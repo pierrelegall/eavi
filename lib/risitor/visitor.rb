@@ -13,8 +13,6 @@ module Risitor
       raise NoVisitMethodError.new(self, object, as)
     end
 
-    private
-
     module ClassMethods
       def alias_visit_method(visit_method_alias)
         define_new_visit_method(visit_method_alias)
@@ -49,6 +47,8 @@ module Risitor
     end
 
     module ClassMethodsWhenIncluded
+    private
+
       private
 
       def define_new_visit_method(new_visit_method)
