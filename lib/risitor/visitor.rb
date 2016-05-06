@@ -12,18 +12,6 @@ module Risitor
 
     private
 
-    class << self
-      def included(visitor)
-        visitor.extend ClassMethods
-        visitor.extend ClassMethodsWhenIncluded
-      end
-
-      def extended(visitor)
-        visitor.extend ClassMethods
-        visitor.extend ClassMethodsWhenExtended
-      end
-    end
-
     module ClassMethods
       def add_visit_method(*classes, &block)
         block = block.curry(1) if block.arity == 0
@@ -82,6 +70,18 @@ module Risitor
 
       def undefine_visit_method(visit_method)
         self.singleton_class.send :remove_method, visit_method
+      end
+    end
+
+    class << self
+      def included(visitor)
+        visitor.extend ClassMethods
+        visitor.extend ClassMethodsWhenIncluded
+      end
+
+      def extended(visitor)
+        visitor.extend ClassMethods
+        visitor.extend ClassMethodsWhenExtended
       end
     end
   end
