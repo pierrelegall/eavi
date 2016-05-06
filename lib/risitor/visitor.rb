@@ -54,6 +54,8 @@ module Risitor
     end
 
     module ClassMethodsWhenIncluded
+      private
+
       def define_visit_method_for(klass, &block)
         define_method VisitMethodHelper.gen_name(klass), block
       end
@@ -68,6 +70,8 @@ module Risitor
     end
 
     module ClassMethodsWhenExtended
+      private
+
       def define_visit_method_for(klass, &block)
         define_singleton_method VisitMethodHelper.gen_name(klass), block
       end
