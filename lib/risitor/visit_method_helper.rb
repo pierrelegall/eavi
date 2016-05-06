@@ -11,4 +11,6 @@ module Risitor
       return REGEXP.match visit_method_name
     end
   end
+
+  private_constant :VisitMethodHelper
 end
