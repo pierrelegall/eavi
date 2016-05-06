@@ -19,10 +19,7 @@ namespace :run do
 end
 
 namespace :clean do
-  task :all => [:doc]
-  task :doc do
-    sh %{rm -rf doc/}
-  end
+  task :all => []
 end
 
 task :t => "run:test"
