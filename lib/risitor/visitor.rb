@@ -87,15 +87,15 @@ module Risitor
   end
 
   module VisitMethodHelper
-    @template = "visit[%s]"
-    @regexp = /^visit\[.*\]$/
+    TEMPLATE = "visit[%s]"
+    REGEXP = /^visit\[.*\]$/
 
     def self.gen_name(klass)
-      return @template % klass
+      return TEMPLATE % klass
     end
 
     def self.match(visit_method_name)
-      return @regexp.match visit_method_name
+      return REGEXP.match visit_method_name
     end
   end
 
