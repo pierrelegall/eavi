@@ -10,8 +10,6 @@ class Page0; end
 class Page1 < Page0; end
 class Page2 < Page1; end
 class Page3 < Page2; end
-class Page4 < Page3; end
-class Page5 < Page4; end
 
 class Printer
   extend Risitor::Base
@@ -38,7 +36,7 @@ class Reader
 end
 
 page0 = Page0.new
-page5 = Page5.new
+page3 = Page3.new
 
 reader = Reader.new
 
@@ -51,55 +49,55 @@ standard_calls_0_when_extended = Benchmark.measure do
   n.times { Printer.do_not_visit page0 }
 end
 
-standard_calls_5_when_extended = Benchmark.measure do
-  n.times { Printer.do_not_visit page5 }
+standard_calls_3_when_extended = Benchmark.measure do
+  n.times { Printer.do_not_visit page3 }
 end
 
 visit_calls_0_when_extended = Benchmark.measure do
   n.times { Printer.visit page0 }
 end
 
-visit_calls_5_when_extended = Benchmark.measure do
-  n.times { Printer.visit page5 }
+visit_calls_3_when_extended = Benchmark.measure do
+  n.times { Printer.visit page3 }
 end
 
 standard_calls_0_when_included = Benchmark.measure do
   n.times { reader.do_not_visit page0 }
 end
 
-standard_calls_5_when_included = Benchmark.measure do
-  n.times { reader.do_not_visit page5 }
+standard_calls_3_when_included = Benchmark.measure do
+  n.times { reader.do_not_visit page3 }
 end
 
 visit_calls_0_when_included = Benchmark.measure do
   n.times { reader.visit page0 }
 end
 
-visit_calls_5_when_included = Benchmark.measure do
-  n.times { reader.visit page5 }
+visit_calls_3_when_included = Benchmark.measure do
+  n.times { reader.visit page3 }
 end
 
 speed_0_when_extended =
   visit_calls_0_when_extended.real / standard_calls_0_when_extended.real
 
-speed_5_when_extended =
-  visit_calls_5_when_extended.real / standard_calls_5_when_extended.real
+speed_3_when_extended =
+  visit_calls_3_when_extended.real / standard_calls_3_when_extended.real
 
 speed_0_when_included =
   visit_calls_0_when_included.real / standard_calls_0_when_included.real
 
-speed_5_when_included =
-  visit_calls_5_when_included.real / standard_calls_5_when_included.real
+speed_3_when_included =
+  visit_calls_3_when_included.real / standard_calls_3_when_included.real
 
 average_at_depth_0 = (speed_0_when_extended + speed_0_when_included) / 2
-average_at_depth_5 = (speed_5_when_extended + speed_5_when_included) / 2
-average_when_included = (speed_0_when_included + speed_5_when_included) / 2
-average_when_extended = (speed_0_when_extended + speed_5_when_extended) / 2
-average_when_included = (speed_0_when_included + speed_5_when_included) / 2
+average_at_depth_3 = (speed_3_when_extended + speed_3_when_included) / 2
+average_when_included = (speed_0_when_included + speed_3_when_included) / 2
+average_when_extended = (speed_0_when_extended + speed_3_when_extended) / 2
+average_when_included = (speed_0_when_included + speed_3_when_included) / 2
 average = (average_when_extended + average_when_included) / 2
 
 puts "Average at depth 0:    #{average_at_depth_0.round(2)}x slower"
-puts "Average at depth 5:    #{average_at_depth_5.round(2)}x slower"
+puts "Average at depth 3:    #{average_at_depth_3.round(2)}x slower"
 puts "Average when extended: #{average_when_extended.round(2)}x slower"
 puts "Average when included: #{average_when_included.round(2)}x slower"
 puts "Total average:         #{average.round(2)}x slower"
