@@ -16,6 +16,4 @@ module Risitor
       return const_get type_symbol
     end
   end
-
-  private_constant :VisitMethodHelper
 end
