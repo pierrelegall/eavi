@@ -4,7 +4,7 @@ module Risitor
     REGEXP = /^visit\[(.*)\]$/
 
     def self.gen_name(klass)
-      return TEMPLATE % klass
+      return TEMPLATE % klass.name
     end
 
     def self.match(visit_method_name)
