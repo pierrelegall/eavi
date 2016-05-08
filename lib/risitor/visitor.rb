@@ -10,9 +10,8 @@ module Risitor
     def visit(object, *args, as: object.class)
       as.ancestors.each do |type|
         visit_method = VisitMethodHelper.gen_name(type)
-        if respond_to? visit_method
-          return send(visit_method, object, *args)
-        end
+        next unless respond_to? visit_method
+        return send(visit_method, object, *args)
       end
       raise NoVisitMethodError.new(self, object, as)
     end
