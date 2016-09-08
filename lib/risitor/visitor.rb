@@ -23,7 +23,7 @@ module Risitor
         define_new_visit_method(visit_method_alias)
       end
 
-      # Add/overrie a visit method for the types +types+.
+      # Add/override a visit method for the types +types+.
       def add_visit_method(*types, &block)
         block = block.curry(1) if block.arity == 0
         types.each do |type|
