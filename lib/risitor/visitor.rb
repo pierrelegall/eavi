@@ -1,5 +1,5 @@
-require_relative './visit_method_helper'
-require_relative './no_visit_method_error'
+require_relative 'visit_method_helper'
+require_relative 'no_visit_method_error'
 
 module Risitor
   # The Visitor module can extend a module or include a class
@@ -16,9 +16,21 @@ module Risitor
       raise NoVisitMethodError.new(self, object, as)
     end
 
-    # List of the methods extended by a Visitor
+    class << self
+      def included(visitor)
+        visitor.extend ClassMethods
+        visitor.extend ClassMethodsWhenIncluded
+      end
+
+      def extended(visitor)
+        visitor.extend ClassMethods
+        visitor.extend ClassMethodsWhenExtended
+      end
+    end
+
+    # List of the methods extended by a Visitor.
     module ClassMethods
-      # Alias the `visit` method
+      # Alias the `visit` method.
       def alias_visit_method(visit_method_alias)
         define_new_visit_method(visit_method_alias)
       end
@@ -101,18 +113,6 @@ module Risitor
 
       def undefine_visit_method(visit_method)
         self.singleton_class.send :remove_method, visit_method
-      end
-    end
-
-    class << self
-      def included(visitor)
-        visitor.extend ClassMethods
-        visitor.extend ClassMethodsWhenIncluded
-      end
-
-      def extended(visitor)
-        visitor.extend ClassMethods
-        visitor.extend ClassMethodsWhenExtended
       end
     end
   end
