@@ -1,5 +1,5 @@
-require_relative './no_visit_method_error'
 require_relative './visit_method_helper'
+require_relative './no_visit_method_error'
 
 module Risitor
   # The Visitor module can extend a module or include a class
