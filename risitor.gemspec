@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'risitor'
-  s.version     = '1.0.0'
+  s.version     = '1.0.1'
   s.date        = '2016-09-08'
 
   s.summary     = 'A visitor pattern helper for Ruby.'
