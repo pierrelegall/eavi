@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.description = 'Make the visitor pattern accessible and flexible inside Ruby.'
 
   s.homepage    = 'http://github.com/lepieru/risitor'
-  s.files       = ['lib/risitor.rb']
+  s.files       = Dir['lib/**/*']
 
   s.authors     = ['Pierre Le Gall']
   s.email       = 'pierre@legall.im'
