@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.date        = '2016-09-08'
 
   s.summary     = 'A visitor pattern helper for Ruby.'
-  s.description = 'Make the visitor pattern accessible and flexible inside Ruby.'
+  s.description = 'Make the visitor pattern accessible and flexible in Ruby.'
 
   s.homepage    = 'http://github.com/lepieru/risitor'
   s.files       = Dir['lib/**/*']
