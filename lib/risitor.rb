@@ -2,4 +2,4 @@
 module Risitor
 end
 
-require_relative './risitor/visitor'
+require_relative 'risitor/visitor'

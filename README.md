@@ -6,11 +6,11 @@ You can find [here](https://en.wikipedia.org/wiki/Visitor_pattern) the well docu
 
 ## Benefits
 
-- it **automatically cross the ancestors list** to find a matching visit method (like a statically typed language does thanks to method overloading)
-- it **works without polluting visitable objects interface** with an `accept` method (not possible with a statically typed language like `C++` or `Java`)
-- it does not require to explicitly set visited objects visitable
-- it can build class instance visitor (when `Risitor::Base` is included) and singleton visitor (when `Risitor::Base` is extended), all-in-one
-- it raise a custom error (`Risitor::NoVisitMethodError`, a subtype of `NoMethodError`) if no visit method match the object type
+- it **automatically cross the ancestors list (classes in the hierarchy and included modules)** to find a matching visit method (like a statically typed language does thanks to method overloading)
+- it **works without polluting visitable objects interface** with an `accept` method (not possible with a statically typed language like `C++` or `Java`); consequently it does not require to explicitly set visited objects visitable
+- it allows class instance visitors (when `Risitor::Base` is included) and singleton visitors (when `Risitor::Base` is extended), all-in-one
+- it comes with its own little internal Domain-Specific Language (see code examples below)
+- it raises a custom error (`Risitor::NoVisitMethodError`, a subtype of `NoMethodError`) if no visit method match the object type
 
 ## How to use
 
@@ -67,7 +67,7 @@ Jsonifier.serialize an_object
 
 ## Benchmark
 
-This is a benchmark output:
+This is a benchmark output (with Ruby 2.3):
 
 > This benchmark compare the speed of a visit call and a standard method call.
 >
@@ -79,9 +79,9 @@ This is a benchmark output:
 > - Average when included: 6.28x slower
 > - Total average:         6.06x slower
 
-A visit method call is **on average only 6x slower** than a standard method call.
+The **depth** is the number of tries before matching an existing visit method using the visited object's ancestors' list.
 
-The **depth** is the number of try before matching a visit method crossing the visited object class ancestors.
+This benchmark shows that a visit method call is **on average only 6x slower** than a standard method call.
 
 ## License
 

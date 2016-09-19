@@ -1,5 +1,5 @@
-require_relative './no_visit_method_error'
-require_relative './visit_method_helper'
+require_relative 'visit_method_helper'
+require_relative 'no_visit_method_error'
 
 module Risitor
   # The Visitor module can extend a module or include a class
@@ -16,32 +16,44 @@ module Risitor
       raise NoVisitMethodError.new(self, object, as)
     end
 
-    # List of the methods extended by a Visitor
+    class << self
+      def included(visitor)
+        visitor.extend ClassMethods
+        visitor.extend ClassMethodsWhenIncluded
+      end
+
+      def extended(visitor)
+        visitor.extend ClassMethods
+        visitor.extend ClassMethodsWhenExtended
+      end
+    end
+
+    # List of the methods extended by a Visitor.
     module ClassMethods
-      # Alias the `visit` method
+      # Alias the `visit` method.
       def alias_visit_method(visit_method_alias)
-        define_new_visit_method(visit_method_alias)
+        specialized_alias_visit_method(visit_method_alias)
       end
 
       # Add/override a visit method for the types +types+.
       def add_visit_method(*types, &block)
         block = block.curry(1) if block.arity == 0
         types.each do |type|
-          define_visit_method_for type, &block
+          specialized_add_visit_method(type, &block)
         end
       end
 
       # Remove the visit methods for the types +types+.
       def remove_visit_method(*types)
         types.each do |type|
-          undefine_visit_method_for type
+          specialized_remove_visit_method(type)
         end
       end
 
       # Remove all the visit methods.
       def reset_visit_methods
         visit_methods.each do |visit_method|
-          undefine_visit_method visit_method
+          specialized_remove_method(visit_method)
         end
       end
 
@@ -66,19 +78,19 @@ module Risitor
     module ClassMethodsWhenIncluded
       private
 
-      def define_new_visit_method(new_visit_method)
-        define_method new_visit_method, instance_method(:visit)
+      def specialized_alias_visit_method(visit_method_alias)
+        define_method visit_method_alias, instance_method(:visit)
       end
 
-      def define_visit_method_for(klass, &block)
+      def specialized_add_visit_method(klass, &block)
         define_method VisitMethodHelper.gen_name(klass), block
       end
 
-      def undefine_visit_method_for(klass)
+      def specialized_remove_visit_method(klass)
         remove_method VisitMethodHelper.gen_name(klass)
       end
 
-      def undefine_visit_method(visit_method)
+      def specialized_remove_method(visit_method)
         remove_method visit_method
       end
     end
@@ -87,32 +99,20 @@ module Risitor
     module ClassMethodsWhenExtended
       private
 
-      def define_new_visit_method(new_visit_method)
-        define_singleton_method new_visit_method, method(:visit)
+      def specialized_alias_visit_method(visit_method_alias)
+        define_singleton_method visit_method_alias, method(:visit)
       end
 
-      def define_visit_method_for(klass, &block)
+      def specialized_add_visit_method(klass, &block)
         define_singleton_method VisitMethodHelper.gen_name(klass), block
       end
 
-      def undefine_visit_method_for(klass)
+      def specialized_remove_visit_method(klass)
         self.singleton_class.send :remove_method, VisitMethodHelper.gen_name(klass)
       end
 
-      def undefine_visit_method(visit_method)
+      def specialized_remove_method(visit_method)
         self.singleton_class.send :remove_method, visit_method
-      end
-    end
-
-    class << self
-      def included(visitor)
-        visitor.extend ClassMethods
-        visitor.extend ClassMethodsWhenIncluded
-      end
-
-      def extended(visitor)
-        visitor.extend ClassMethods
-        visitor.extend ClassMethodsWhenExtended
       end
     end
   end
