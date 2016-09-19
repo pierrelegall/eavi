@@ -17,9 +17,10 @@ class VisitorTest < MiniTest::Test
     @reader.class.when_visiting Page do
       "Reading"
     end
-    assert_equal (@reader.visit @page), "Reading"
-    assert_equal (@reader.visit @page, as: Page), "Reading"
-
+    assert_equal (@reader.visit @page),
+                 "Reading"
+    assert_equal (@reader.visit @page, as: Page),
+                 "Reading"
     assert_raises Risitor::NoVisitMethodError do
       @reader.visit "string"
     end
@@ -33,15 +34,18 @@ class VisitorTest < MiniTest::Test
     @reader.class.when_visiting Page do |page|
       self
     end
-    assert_same (@reader.visit @page), @reader
+    assert_same (@reader.visit @page),
+                @reader
   end
 
   def test_visit__when_extended
     Printer.when_visiting Page do |page|
       "Printing"
     end
-    assert_equal (Printer.visit @page), "Printing"
-    assert_equal (Printer.visit @page, as: Page), "Printing"
+    assert_equal (Printer.visit @page),
+                 "Printing"
+    assert_equal (Printer.visit @page, as: Page),
+                 "Printing"
 
     assert_raises Risitor::NoVisitMethodError do
       Printer.visit "string"
@@ -56,19 +60,22 @@ class VisitorTest < MiniTest::Test
     Printer.when_visiting Page do |page|
       self
     end
-    assert_same (Printer.visit @page), Printer
+    assert_same (Printer.visit @page),
+                Printer
   end
 
   def test_visit__with_args
     Printer.when_visiting String do |string, *args|
       args
     end
-    assert_equal (Printer.visit "something", 1, 2), [1, 2]
+    assert_equal (Printer.visit "something", 1, 2),
+                 [1, 2]
 
     Printer.when_visiting String do |string, a, b|
-      {a: a, b: b}
+      { a: a, b: b }
     end
-    assert_equal (Printer.visit "something", 1, 2), {a: 1, b: 2}
+    assert_equal (Printer.visit "something", 1, 2),
+                 { a: 1, b: 2 }
   end
 
   def test_visit__with_inheritance
@@ -76,12 +83,14 @@ class VisitorTest < MiniTest::Test
       "Reading"
     end
     new_reader = NewReader.new
-    assert_equal (new_reader.visit @page), "Reading"
+    assert_equal (new_reader.visit @page),
+                 "Reading"
 
     Printer.when_visiting Page do |page|
       "Printing"
     end
-    assert_equal (NewPrinter.visit @page), "Printing"
+    assert_equal (NewPrinter.visit @page),
+                 "Printing"
   end
 
   def test_alias_visit_method
@@ -98,7 +107,8 @@ class VisitorTest < MiniTest::Test
     Printer.when_visiting Array do |array|
       "Visiting an array"
     end
-    assert_equal (Printer.visit []), "Visiting an array"
+    assert_equal Printer.visit([]),
+                 "Visiting an array"
   end
 
   def test_remove_visit_methods
@@ -122,6 +132,7 @@ class VisitorTest < MiniTest::Test
 
   def test_visitable_types
     Printer.when_visiting String, Array, Hash do; end
-    assert_equal Printer.visitable_types, [String, Array, Hash]
+    assert_equal Printer.visitable_types,
+                 [String, Array, Hash]
   end
 end
