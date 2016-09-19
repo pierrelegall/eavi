@@ -1,38 +1,11 @@
 require 'minitest/autorun'
 
 require_relative '../lib/risitor/visitor'
+require_relative 'fixtures'
+
+include Risitor::Fixtures
 
 class VisitorTest < MiniTest::Test
-  class Page
-  end
-
-  class Reader
-    include Risitor::Base
-
-    when_visiting Page do
-      "Reading"
-    end
-  end
-
-  class Printer
-    extend Risitor::Base
-
-    when_visiting Page do |page|
-      "Printing #{page}"
-    end
-
-    when_visiting String do |string, capitalize|
-      string = string.capitalize if capitalize
-      return string
-    end
-  end
-
-  class NewReader < Reader
-  end
-
-  class NewPrinter < Printer
-  end
-
   def setup
     @page = Page.new
     @reader = Reader.new
