@@ -37,7 +37,7 @@ module Risitor
 
       # Add/override a visit method for the types +types+.
       def add_visit_method(*types, &block)
-        block = block.curry(1) if block.arity == 0
+        block = block.curry(1) if block.arity.zero?
         types.each do |type|
           specialized_add_visit_method(type, &block)
         end
@@ -108,11 +108,11 @@ module Risitor
       end
 
       def specialized_remove_visit_method(klass)
-        self.singleton_class.send :remove_method, VisitMethodHelper.gen_name(klass)
+        singleton_class.send :remove_method, VisitMethodHelper.gen_name(klass)
       end
 
       def specialized_remove_method(visit_method)
-        self.singleton_class.send :remove_method, visit_method
+        singleton_class.send :remove_method, visit_method
       end
     end
   end

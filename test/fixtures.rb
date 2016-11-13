@@ -9,7 +9,7 @@ module Risitor
       include Risitor::Base
 
       when_visiting Page do
-        "Reading"
+        'Reading'
       end
     end
 

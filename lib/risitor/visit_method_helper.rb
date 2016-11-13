@@ -1,7 +1,7 @@
 module Risitor
   # Helper for visit methods generation, matching & co.
   module VisitMethodHelper
-    TEMPLATE = "visit[%s]"
+    TEMPLATE = 'visit[%s]'.freeze
     REGEXP = /^visit\[(.*)\]$/
 
     # Return a visit method name for the type +type+.
