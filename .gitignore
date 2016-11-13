@@ -1,17 +1,4 @@
-# Global
+.bundle/
+vendor/
 
-doc/
-
-# Vim
-
-*.swp
-
-# Emacs
-
-\#*\#
-
-# Eclipse
-
-.buildpath
-.project
-
+Gemfile.lock
