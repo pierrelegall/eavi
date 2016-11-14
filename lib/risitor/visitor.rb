@@ -10,7 +10,7 @@ module Risitor
     def visit(object, *args, as: object.class)
       as.ancestors.each do |type|
         visit_method = VisitMethodHelper.gen_name(type)
-        next unless respond_to? visit_method
+        next unless respond_to?(visit_method)
         return send(visit_method, object, *args)
       end
       raise NoVisitMethodError.new(self, object, as)
@@ -18,13 +18,13 @@ module Risitor
 
     class << self
       def included(visitor)
-        visitor.extend ClassMethods
-        visitor.extend ClassMethodsWhenIncluded
+        visitor.extend(ClassMethods)
+        visitor.extend(ClassMethodsWhenIncluded)
       end
 
       def extended(visitor)
-        visitor.extend ClassMethods
-        visitor.extend ClassMethodsWhenExtended
+        visitor.extend(ClassMethods)
+        visitor.extend(ClassMethodsWhenExtended)
       end
     end
 
@@ -60,7 +60,7 @@ module Risitor
       # Return a list of the visit method.
       def visit_methods
         return methods.select do |method|
-          VisitMethodHelper.match method
+          VisitMethodHelper.match(method)
         end
       end
 
@@ -79,19 +79,19 @@ module Risitor
       private
 
       def specialized_alias_visit_method(visit_method_alias)
-        define_method visit_method_alias, instance_method(:visit)
+        define_method(visit_method_alias, instance_method(:visit))
       end
 
       def specialized_add_visit_method(klass, &block)
-        define_method VisitMethodHelper.gen_name(klass), block
+        define_method(VisitMethodHelper.gen_name(klass), block)
       end
 
       def specialized_remove_visit_method(klass)
-        remove_method VisitMethodHelper.gen_name(klass)
+        remove_method(VisitMethodHelper.gen_name(klass))
       end
 
       def specialized_remove_method(visit_method)
-        remove_method visit_method
+        remove_method(visit_method)
       end
     end
 
@@ -100,19 +100,19 @@ module Risitor
       private
 
       def specialized_alias_visit_method(visit_method_alias)
-        define_singleton_method visit_method_alias, method(:visit)
+        define_singleton_method(visit_method_alias, method(:visit))
       end
 
       def specialized_add_visit_method(klass, &block)
-        define_singleton_method VisitMethodHelper.gen_name(klass), block
+        define_singleton_method(VisitMethodHelper.gen_name(klass), block)
       end
 
       def specialized_remove_visit_method(klass)
-        singleton_class.send :remove_method, VisitMethodHelper.gen_name(klass)
+        singleton_class.send(:remove_method, VisitMethodHelper.gen_name(klass))
       end
 
       def specialized_remove_method(visit_method)
-        singleton_class.send :remove_method, visit_method
+        singleton_class.send(:remove_method, visit_method)
       end
     end
   end

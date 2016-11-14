@@ -97,14 +97,14 @@ class VisitorTest < MiniTest::Test
     Printer.when_visiting Page do
       # [...]
     end
-    Printer.send :alias_visit_method, :print
-    Printer.print @page
+    Printer.send(:alias_visit_method, :print)
+    Printer.print(@page)
 
     Reader.when_visiting Page do
       # [...]
     end
-    Reader.send :alias_visit_method, :read
-    @reader.read @page
+    Reader.send(:alias_visit_method, :read)
+    @reader.read(@page)
   end
 
   def test_add_visit_methods
@@ -119,9 +119,9 @@ class VisitorTest < MiniTest::Test
     Printer.when_visiting Page do |page|
       'Printing'
     end
-    Printer.remove_visit_method Page
+    Printer.remove_visit_method(Page)
     assert_raises Risitor::NoVisitMethodError do |page|
-      Printer.visit @page
+      Printer.visit(@page)
     end
   end
 
