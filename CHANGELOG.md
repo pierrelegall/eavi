@@ -1,4 +1,4 @@
-# Next
+# v1.2
 - [IMPROVEMENT] Guard project setup
 - [IMPROVEMENT] Better code style thanks to RuboCop
 
