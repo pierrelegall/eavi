@@ -1,3 +1,7 @@
+# v1.2
+- [IMPROVEMENT] Guard project setup
+- [IMPROVEMENT] Better code style thanks to RuboCop
+
 # v1.1.0
 - [DOC] This CHANGELOG file added
 - [DOC] Better README
