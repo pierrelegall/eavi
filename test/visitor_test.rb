@@ -1,6 +1,6 @@
 require 'minitest/autorun'
 
-require_relative '../lib/risitor/visitor'
+require_relative '../lib/eavi/visitor'
 require_relative 'fixtures'
 
 include Eavi::Fixtures

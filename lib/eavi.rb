@@ -2,4 +2,4 @@
 module Eavi
 end
 
-require_relative 'risitor/visitor'
+require_relative 'eavi/visitor'

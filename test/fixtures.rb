@@ -1,4 +1,4 @@
-require_relative '../lib/risitor/visitor'
+require_relative '../lib/eavi/visitor'
 
 module Eavi
   module Fixtures
