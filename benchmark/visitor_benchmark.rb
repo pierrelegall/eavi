@@ -12,7 +12,7 @@ class Page2 < Page1; end
 class Page3 < Page2; end
 
 class Printer
-  extend Eavi::Base
+  extend Eavi::Visitor
 
   when_visiting Page0 do |page|
     "Printing #{page}"
@@ -24,7 +24,7 @@ class Printer
 end
 
 class Reader
-  include Eavi::Base
+  include Eavi::Visitor
 
   when_visiting Page0 do |page|
     "Reading #{page}"

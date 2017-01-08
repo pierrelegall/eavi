@@ -8,7 +8,7 @@ You can find [here](https://en.wikipedia.org/wiki/Visitor_pattern) the well docu
 
 - it **automatically cross the ancestors list (classes in the hierarchy and included modules)** to find a matching visit method (like a statically typed language does thanks to method overloading)
 - it **works without polluting visitable objects interface** with an `accept` method (not possible with a statically typed language like `C++` or `Java`); consequently it does not require to explicitly set visited objects visitable
-- it allows class instance visitors (when `Eavi::Base` is included) and singleton visitors (when `Eavi::Base` is extended), all-in-one
+- it allows class instance visitors (when `Eavi::Visitor` is included) and singleton visitors (when `Eavi::Visitor` is extended), all-in-one
 - it comes with its own little internal Domain-Specific Language (see code examples below)
 - it raises a custom error (`Eavi::NoVisitMethodError`, a subtype of `NoMethodError`) if no visit method match the object type
 
@@ -18,7 +18,7 @@ A visitor can be define like this:
 
 ```ruby
 class Jsonifier
-  include Eavi::Base
+  include Eavi::Visitor
 
   when_visiting Array do |array|
     # some code…
@@ -43,7 +43,7 @@ You can **build a singleton visitor** too, using `extend` instead of `include`:
 
 ```ruby
 module Jsonifier
-  extend Eavi::Base
+  extend Eavi::Visitor
 
   # […]
 end
@@ -55,7 +55,7 @@ And feel free to **alias the visit method**:
 
 ```ruby
 module Jsonifier
-  extend Eavi::Base
+  extend Eavi::Visitor
 
   alias_visit_method :serialize
 

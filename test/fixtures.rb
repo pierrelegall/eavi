@@ -6,7 +6,7 @@ module Eavi
     end
 
     class Reader
-      include Eavi::Base
+      include Eavi::Visitor
 
       when_visiting Page do
         'Reading'
@@ -14,7 +14,7 @@ module Eavi
     end
 
     class Printer
-      extend Eavi::Base
+      extend Eavi::Visitor
 
       when_visiting Page do |page|
         "Printing #{page}"

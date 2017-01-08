@@ -116,6 +116,4 @@ module Eavi
       end
     end
   end
-
-  Base = Visitor
 end
