@@ -1,12 +1,12 @@
 require_relative '../lib/risitor/visitor'
 
-module Risitor
+module Eavi
   module Fixtures
     class Page
     end
 
     class Reader
-      include Risitor::Base
+      include Eavi::Base
 
       when_visiting Page do
         'Reading'
@@ -14,7 +14,7 @@ module Risitor
     end
 
     class Printer
-      extend Risitor::Base
+      extend Eavi::Base
 
       when_visiting Page do |page|
         "Printing #{page}"

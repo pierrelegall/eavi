@@ -1,4 +1,4 @@
-module Risitor
+module Eavi
   # Error raised when a Visitor failed to visit an object.
   class NoVisitMethodError < NoMethodError
     attr_reader :visitor, :visited, :visited_as

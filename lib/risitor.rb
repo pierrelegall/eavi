@@ -1,5 +1,5 @@
-# Risitor is a Ruby visitor pattern helper.
-module Risitor
+# Eavi is a Ruby visitor pattern helper.
+module Eavi
 end
 
 require_relative 'risitor/visitor'

@@ -3,7 +3,7 @@ require 'minitest/autorun'
 require_relative '../lib/risitor/visitor'
 require_relative 'fixtures'
 
-include Risitor::Fixtures
+include Eavi::Fixtures
 
 class VisitorTest < MiniTest::Test
   def setup
@@ -21,13 +21,13 @@ class VisitorTest < MiniTest::Test
                  'Reading'
     assert_equal @reader.visit(@page, as: Page),
                  'Reading'
-    assert_raises Risitor::NoVisitMethodError do
+    assert_raises Eavi::NoVisitMethodError do
       @reader.visit('string')
     end
-    assert_raises Risitor::NoVisitMethodError do
+    assert_raises Eavi::NoVisitMethodError do
       @reader.visit('string', as: String)
     end
-    assert_raises Risitor::NoVisitMethodError do
+    assert_raises Eavi::NoVisitMethodError do
       @reader.visit(@page, as: String)
     end
 
@@ -47,13 +47,13 @@ class VisitorTest < MiniTest::Test
     assert_equal Printer.visit(@page, as: Page),
                  'Printing'
 
-    assert_raises Risitor::NoVisitMethodError do
+    assert_raises Eavi::NoVisitMethodError do
       Printer.visit('string')
     end
-    assert_raises Risitor::NoVisitMethodError do
+    assert_raises Eavi::NoVisitMethodError do
       Printer.visit('string', as: String)
     end
-    assert_raises Risitor::NoVisitMethodError do
+    assert_raises Eavi::NoVisitMethodError do
       Printer.visit(@page, as: String)
     end
 
@@ -120,7 +120,7 @@ class VisitorTest < MiniTest::Test
       'Printing'
     end
     Printer.remove_visit_method(Page)
-    assert_raises Risitor::NoVisitMethodError do |page|
+    assert_raises Eavi::NoVisitMethodError do |page|
       Printer.visit(@page)
     end
   end

@@ -1,7 +1,7 @@
 require_relative 'visit_method_helper'
 require_relative 'no_visit_method_error'
 
-module Risitor
+module Eavi
   # The Visitor module can extend a module or include a class
   # to make it a dynamic visitor (see the OOP visitor pattern).
   module Visitor

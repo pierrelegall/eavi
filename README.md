@@ -1,6 +1,6 @@
-# Risitor
+# Eavi
 
-Risitor is a **R**uby v**isitor** pattern helper.
+Eavi (for Easy Visitor) is a Ruby visitor pattern helper.
 
 You can find [here](https://en.wikipedia.org/wiki/Visitor_pattern) the well documented Wikipedia article about the visitor pattern.
 
@@ -8,9 +8,9 @@ You can find [here](https://en.wikipedia.org/wiki/Visitor_pattern) the well docu
 
 - it **automatically cross the ancestors list (classes in the hierarchy and included modules)** to find a matching visit method (like a statically typed language does thanks to method overloading)
 - it **works without polluting visitable objects interface** with an `accept` method (not possible with a statically typed language like `C++` or `Java`); consequently it does not require to explicitly set visited objects visitable
-- it allows class instance visitors (when `Risitor::Base` is included) and singleton visitors (when `Risitor::Base` is extended), all-in-one
+- it allows class instance visitors (when `Eavi::Base` is included) and singleton visitors (when `Eavi::Base` is extended), all-in-one
 - it comes with its own little internal Domain-Specific Language (see code examples below)
-- it raises a custom error (`Risitor::NoVisitMethodError`, a subtype of `NoMethodError`) if no visit method match the object type
+- it raises a custom error (`Eavi::NoVisitMethodError`, a subtype of `NoMethodError`) if no visit method match the object type
 
 ## How to use
 
@@ -18,7 +18,7 @@ A visitor can be define like this:
 
 ```ruby
 class Jsonifier
-  include Risitor::Base
+  include Eavi::Base
 
   when_visiting Array do |array|
     # some code…
@@ -43,7 +43,7 @@ You can **build a singleton visitor** too, using `extend` instead of `include`:
 
 ```ruby
 module Jsonifier
-  extend Risitor::Base
+  extend Eavi::Base
 
   # […]
 end
@@ -55,7 +55,7 @@ And feel free to **alias the visit method**:
 
 ```ruby
 module Jsonifier
-  extend Risitor::Base
+  extend Eavi::Base
 
   alias_visit_method :serialize
 
@@ -85,4 +85,4 @@ This benchmark shows that a visit method call is **on average only 6x slower** t
 
 ## License
 
-Risitor is licensed under the MIT License.
+Eavi is licensed under the MIT License.
