@@ -47,6 +47,12 @@ class VisitorTest < MiniTest::Test
     end
     assert_same @reader.visit(@page),
                 @reader
+
+    @reader.when_visiting Page do |page|
+      return page
+    end
+    assert_same @reader.visit(@page),
+                @page
   end
 
   def test_visit__when_extended
@@ -83,6 +89,12 @@ class VisitorTest < MiniTest::Test
     end
     assert_same Printer.visit(@page),
                 Printer
+
+    Printer.when_visiting Page do |page|
+      return page
+    end
+    assert_same Printer.visit(@page),
+                @page
   end
 
   def test_visit__with_args
