@@ -42,7 +42,7 @@ class VisitorTest < MiniTest::Test
       @reader.visit(@page, as: String)
     end
 
-    @reader.class.when_visiting Page do |page|
+    @reader.class.when_visiting Page do
       return self
     end
     assert_same @reader.visit(@page),
@@ -50,7 +50,7 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_visit__when_extended
-    Printer.when_visiting Page do |page|
+    Printer.when_visiting Page do
       return 'Printing'
     end
     assert_equal Printer.visit(@page),
@@ -78,7 +78,7 @@ class VisitorTest < MiniTest::Test
       Printer.visit(@page, as: String)
     end
 
-    Printer.when_visiting Page do |page|
+    Printer.when_visiting Page do
       return self
     end
     assert_same Printer.visit(@page),
@@ -86,28 +86,28 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_visit__with_args
-    Printer.when_visiting String do |string, *args|
+    Printer.when_visiting String do |_, *args|
       return args
     end
     assert_equal Printer.visit('something', 1, 2),
                  [1, 2]
 
-    Printer.when_visiting String do |string, a, b|
+    Printer.when_visiting String do |_, a, b|
       return { a: a, b: b }
     end
-    assert_equal (Printer.visit 'something', 1, 2),
+    assert_equal Printer.visit('something', 1, 2),
                  { a: 1, b: 2 }
   end
 
   def test_visit__with_inheritance
-    Reader.when_visiting Page do |page|
+    Reader.when_visiting Page do
       return 'Reading'
     end
     new_reader = NewReader.new
     assert_equal new_reader.visit(@page),
                  'Reading'
 
-    Printer.when_visiting Page do |page|
+    Printer.when_visiting Page do
       return 'Printing'
     end
     assert_equal NewPrinter.visit(@page),
@@ -129,7 +129,7 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_add_visit_methods
-    Printer.when_visiting Array do |array|
+    Printer.when_visiting Array do
       return 'Visiting an array'
     end
     assert_equal Printer.visit([]),
@@ -137,11 +137,11 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_remove_visit_methods
-    Printer.when_visiting Page do |page|
+    Printer.when_visiting Page do
       'Printing'
     end
     Printer.remove_visit_method(Page)
-    assert_raises Eavi::NoVisitMethodError do |page|
+    assert_raises Eavi::NoVisitMethodError do
       Printer.visit(@page)
     end
   end
