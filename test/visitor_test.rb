@@ -21,6 +21,7 @@ class VisitorTest < MiniTest::Test
                  'Reading'
     assert_equal @reader.visit(@page, as: Page),
                  'Reading'
+
     assert_raises Eavi::NoVisitMethodError do
       @reader.visit('string')
     end
@@ -28,6 +29,16 @@ class VisitorTest < MiniTest::Test
       @reader.visit('string', as: String)
     end
     assert_raises Eavi::NoVisitMethodError do
+      @reader.visit(@page, as: String)
+    end
+
+    assert_raises TypeError do
+      @reader.visit('string')
+    end
+    assert_raises TypeError do
+      @reader.visit('string', as: String)
+    end
+    assert_raises TypeError do
       @reader.visit(@page, as: String)
     end
 
@@ -54,6 +65,16 @@ class VisitorTest < MiniTest::Test
       Printer.visit('string', as: String)
     end
     assert_raises Eavi::NoVisitMethodError do
+      Printer.visit(@page, as: String)
+    end
+
+    assert_raises TypeError do
+      Printer.visit('string')
+    end
+    assert_raises TypeError do
+      Printer.visit('string', as: String)
+    end
+    assert_raises TypeError do
       Printer.visit(@page, as: String)
     end
 

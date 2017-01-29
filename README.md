@@ -10,7 +10,7 @@ You can find [here](https://en.wikipedia.org/wiki/Visitor_pattern) the well docu
 - it **works without polluting visitable objects interface** with an `accept` method (not possible with a statically typed language like `C++` or `Java`); consequently it does not require to explicitly set visited objects visitable
 - it allows class instance visitors (when `Eavi::Visitor` is included) and singleton visitors (when `Eavi::Visitor` is extended), all-in-one
 - it comes with its own little internal Domain-Specific Language (see code examples below)
-- it raises a custom error (`Eavi::NoVisitMethodError`, a subtype of `NoMethodError`) if no visit method match the object type
+- it raises a custom error (`Eavi::NoVisitMethodError`, a subtype of `TypeError`) if a visitor cannot handle an object
 
 ## How to use
 

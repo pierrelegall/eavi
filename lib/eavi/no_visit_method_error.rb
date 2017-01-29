@@ -1,6 +1,6 @@
 module Eavi
   # Error raised when a Visitor failed to visit an object.
-  class NoVisitMethodError < NoMethodError
+  class NoVisitMethodError < TypeError
     attr_reader :visitor, :visited, :visited_as
 
     def initialize(visitor, visited, visited_as)
