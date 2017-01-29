@@ -155,6 +155,15 @@ class VisitorTest < MiniTest::Test
     assert_empty Printer.visit_methods
   end
 
+  def test_visit_methods
+    Printer.when_visiting String, Array, Hash do
+      # [...]
+    end
+    Printer.visit_methods.each do |method|
+      assert_respond_to Printer, method
+    end
+  end
+
   def test_visitable_types
     Printer.when_visiting String, Array, Hash do
       # [...]
