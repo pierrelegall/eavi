@@ -9,7 +9,7 @@ module Eavi
       @visited_as = visited_as
     end
 
-    def message
+    def to_s
       "no method in #{@visitor} to visit as #{@visited_as}"
     end
   end
