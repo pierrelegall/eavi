@@ -31,8 +31,8 @@ module Eavi
     # List of the methods extended by a Visitor.
     module ClassMethods
       # Alias the `visit` method.
-      def alias_visit_method(visit_method_alias)
-        specialized_alias_visit_method(visit_method_alias)
+      def alias_visit(visit_alias)
+        specialized_alias_visit(visit_alias)
       end
 
       # Add/override a visit method for the types +types+.
@@ -71,15 +71,18 @@ module Eavi
         end
       end
 
-      alias_method :when_visiting, :add_visit_method
+      alias_method :visit_for, :add_visit_method
     end
 
     # List of the methods extended by a Visitor when included.
     module ClassMethodsWhenIncluded
       private
 
-      def specialized_alias_visit_method(visit_method_alias)
+      def specialized_alias_visit(visit_alias)
+        visit_method_alias = visit_alias
+        visit_for_method_alias = (visit_alias.to_s + '_for').to_sym
         define_method(visit_method_alias, instance_method(:visit))
+        define_singleton_method(visit_for_method_alias, method(:visit_for))
       end
 
       def specialized_add_visit_method(klass, &block)
@@ -99,8 +102,11 @@ module Eavi
     module ClassMethodsWhenExtended
       private
 
-      def specialized_alias_visit_method(visit_method_alias)
+      def specialized_alias_visit(visit_alias)
+        visit_method_alias = visit_alias
+        visit_for_method_alias = (visit_alias.to_s + '_for').to_sym
         define_singleton_method(visit_method_alias, method(:visit))
+        define_singleton_method(visit_for_method_alias, method(:visit_for))
       end
 
       def specialized_add_visit_method(klass, &block)

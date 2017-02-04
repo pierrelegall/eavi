@@ -8,7 +8,7 @@ module Eavi
     class Reader
       include Eavi::Visitor
 
-      when_visiting Page do
+      visit_for Page do
         'Reading'
       end
     end
@@ -16,11 +16,11 @@ module Eavi
     class Printer
       extend Eavi::Visitor
 
-      when_visiting Page do |page|
+      visit_for Page do |page|
         "Printing #{page}"
       end
 
-      when_visiting String do |string, capitalize|
+      visit_for String do |string, capitalize|
         string = string.capitalize if capitalize
         return string
       end
