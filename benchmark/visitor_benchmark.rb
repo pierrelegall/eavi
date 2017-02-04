@@ -97,8 +97,8 @@ average_when_extended =
 
 average = (average_when_extended + average_when_included) / 2
 
-puts "Average at depth 0:    #{average_at_depth0.round(2)}x slower"
-puts "Average at depth 3:    #{average_at_depth3.round(2)}x slower"
-puts "Average when extended: #{average_when_extended.round(2)}x slower"
-puts "Average when included: #{average_when_included.round(2)}x slower"
-puts "Total average:         #{average.round(2)}x slower"
+puts "- Average at depth 0:    #{average_at_depth0.round(2)}x slower"
+puts "- Average at depth 3:    #{average_at_depth3.round(2)}x slower"
+puts "- Average when extended: #{average_when_extended.round(2)}x slower"
+puts "- Average when included: #{average_when_included.round(2)}x slower"
+puts "- Total average:         #{average.round(2)}x slower"
