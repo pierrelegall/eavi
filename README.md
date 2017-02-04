@@ -71,21 +71,21 @@ Jsonifier.serialize an_object
 
 ## Benchmark
 
-This is a benchmark output (with Ruby 2.3):
+This is a benchmark output (MRI 2.3, i5-4670K 3.40GHz CPU):
 
 > This benchmark compare the speed of a visit call and a standard method call.
 >
 > Benchmarking…
 >
-> - Average at depth 0:    4.09x slower
-> - Average at depth 3:    8.03x slower
-> - Average when extended: 5.84x slower
-> - Average when included: 6.28x slower
-> - Total average:         6.06x slower
+> - Average at depth 0:    2.6x slower
+> - Average at depth 3:    5.45x slower
+> - Average when extended: 3.94x slower
+> - Average when included: 4.11x slower
+> - Total average:         4.02x slower
 
 The **depth** is the number of tries before matching an existing visit method using the visited object's ancestors' list.
 
-This benchmark shows that a visit method call is **on average only 6x slower** than a standard method call.
+This benchmark shows that a visit method call is **on average only 4x slower** than a standard method call.
 
 ## License
 

@@ -9,9 +9,9 @@ module Eavi
     # type of +object+.
     def visit(object, *args, as: object.class)
       as.ancestors.each do |type|
-        visit_method = VisitMethodHelper.gen_name(type)
-        next unless respond_to?(visit_method)
-        return send(visit_method, object, *args)
+        visit_method_name = VisitMethodHelper.gen_name(type)
+        next unless respond_to?(visit_method_name)
+        return send(visit_method_name, object, *args)
       end
       raise NoVisitMethodError.new(self, object, as)
     end
@@ -31,8 +31,8 @@ module Eavi
     # List of the methods extended by a Visitor.
     module ClassMethods
       # Alias the `visit` method.
-      def alias_visit(visit_alias)
-        specialized_alias_visit(visit_alias)
+      def alias_visit(visit_method_alias)
+        specialized_alias_visit_method(visit_method_alias)
       end
 
       # Add/override a visit method for the types +types+.
