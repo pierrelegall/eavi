@@ -18,13 +18,26 @@ module Eavi
 
     class << self
       def included(visitor)
+        visitor.extend(ClassDSL)
         visitor.extend(ClassMethods)
         visitor.extend(ClassMethodsWhenIncluded)
       end
 
       def extended(visitor)
+        visitor.extend(ClassDSL)
         visitor.extend(ClassMethods)
         visitor.extend(ClassMethodsWhenExtended)
+      end
+    end
+
+    # Class DSL methods
+    module ClassDSL
+      def def_visit(*types, &block)
+        add_visit_method(*types, &block)
+      end
+
+      def undef_visit(*types)
+        remove_visit_method(*types)
       end
     end
 
@@ -70,9 +83,6 @@ module Eavi
           VisitMethodHelper.get_type(visit_method)
         end
       end
-
-      alias_method :def_visit, :add_visit_method
-      alias_method :undef_visit, :remove_visit_method
     end
 
     # List of the methods extended by a Visitor when included.
