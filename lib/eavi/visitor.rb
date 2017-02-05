@@ -17,20 +17,20 @@ module Eavi
 
     class << self
       def included(visitor)
-        visitor.extend(ClassDSL)
-        visitor.extend(ClassMethods)
-        visitor.extend(ClassMethodsWhenIncluded)
+        visitor.extend(ModuleDSL)
+        visitor.extend(ModuleMethods)
+        visitor.extend(ModuleMethodsWhenIncluded)
       end
 
       def extended(visitor)
-        visitor.extend(ClassDSL)
-        visitor.extend(ClassMethods)
-        visitor.extend(ClassMethodsWhenExtended)
+        visitor.extend(ModuleDSL)
+        visitor.extend(ModuleMethods)
+        visitor.extend(ModuleMethodsWhenExtended)
       end
     end
 
     # Domain-Specific Language for the module/class
-    module ClassDSL
+    module ModuleDSL
       # DSL method to add visit methods on types +types+.
       def def_visit(*types, &block)
         add_visit_method(*types, &block)
@@ -43,7 +43,7 @@ module Eavi
     end
 
     # Extends if included or extended
-    module ClassMethods
+    module ModuleMethods
       # Alias the `visit` method.
       def alias_visit_method(visit_method_alias)
         specialized_alias_visit_method(visit_method_alias)
@@ -87,19 +87,19 @@ module Eavi
     end
 
     # Extends only when included
-    module ClassMethodsWhenIncluded
+    module ModuleMethodsWhenIncluded
       private
 
       def specialized_alias_visit_method(visit_method_alias)
         define_method(visit_method_alias, instance_method(:visit))
       end
 
-      def specialized_add_visit_method(klass, &block)
-        define_method(VisitMethodHelper.gen_name(klass), block)
+      def specialized_add_visit_method(type, &block)
+        define_method(VisitMethodHelper.gen_name(type), block)
       end
 
-      def specialized_remove_visit_method(klass)
-        remove_method(VisitMethodHelper.gen_name(klass))
+      def specialized_remove_visit_method(type)
+        remove_method(VisitMethodHelper.gen_name(type))
       end
 
       def specialized_remove_method(visit_method)
@@ -108,19 +108,19 @@ module Eavi
     end
 
     # Extends only when extended
-    module ClassMethodsWhenExtended
+    module ModuleMethodsWhenExtended
       private
 
       def specialized_alias_visit_method(visit_method_alias)
         define_singleton_method(visit_method_alias, method(:visit))
       end
 
-      def specialized_add_visit_method(klass, &block)
-        define_singleton_method(VisitMethodHelper.gen_name(klass), block)
+      def specialized_add_visit_method(type, &block)
+        define_singleton_method(VisitMethodHelper.gen_name(type), block)
       end
 
-      def specialized_remove_visit_method(klass)
-        singleton_class.send(:remove_method, VisitMethodHelper.gen_name(klass))
+      def specialized_remove_visit_method(type)
+        singleton_class.send(:remove_method, VisitMethodHelper.gen_name(type))
       end
 
       def specialized_remove_method(visit_method)
