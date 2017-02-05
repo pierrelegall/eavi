@@ -36,7 +36,7 @@ class Jsonifier
 end
 
 jsonifier = Jsonifier.new
-jsonifier.visit an_object
+jsonifier.visit(an_object)
 ```
 
 You can **build a singleton visitor** too, using `extend` instead of `include`:
@@ -48,7 +48,7 @@ module Jsonifier
   # […]
 end
 
-Jsonifier.visit an_object
+Jsonifier.visit(an_object)
 ```
 
 And feel free to **alias the visit method**:
@@ -62,7 +62,7 @@ module Jsonifier
   # […]
 end
 
-Jsonifier.serialize an_object
+Jsonifier.serialize(an_object)
 ```
 
 ## Benchmark
