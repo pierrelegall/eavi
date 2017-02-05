@@ -14,7 +14,7 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_visit__when_included
-    @reader.class.visit_for Page do
+    @reader.class.def_visit Page do
       return 'Reading'
     end
     assert_equal @reader.visit(@page),
@@ -42,13 +42,13 @@ class VisitorTest < MiniTest::Test
       @reader.visit(@page, as: String)
     end
 
-    @reader.class.visit_for Page do
+    @reader.class.def_visit Page do
       return self
     end
     assert_same @reader.visit(@page),
                 @reader
 
-    @reader.visit_for Page do |page|
+    @reader.def_visit Page do |page|
       return page
     end
     assert_same @reader.visit(@page),
@@ -56,7 +56,7 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_visit__when_extended
-    Printer.visit_for Page do
+    Printer.def_visit Page do
       return 'Printing'
     end
     assert_equal Printer.visit(@page),
@@ -84,13 +84,13 @@ class VisitorTest < MiniTest::Test
       Printer.visit(@page, as: String)
     end
 
-    Printer.visit_for Page do
+    Printer.def_visit Page do
       return self
     end
     assert_same Printer.visit(@page),
                 Printer
 
-    Printer.visit_for Page do |page|
+    Printer.def_visit Page do |page|
       return page
     end
     assert_same Printer.visit(@page),
@@ -98,13 +98,13 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_visit__with_args
-    Printer.visit_for String do |_, *args|
+    Printer.def_visit String do |_, *args|
       return args
     end
     assert_equal Printer.visit('something', 1, 2),
                  [1, 2]
 
-    Printer.visit_for String do |_, a, b|
+    Printer.def_visit String do |_, a, b|
       return { a: a, b: b }
     end
     assert_equal Printer.visit('something', 1, 2),
@@ -112,14 +112,14 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_visit__with_inheritance
-    Reader.visit_for Page do
+    Reader.def_visit Page do
       return 'Reading'
     end
     new_reader = NewReader.new
     assert_equal new_reader.visit(@page),
                  'Reading'
 
-    Printer.visit_for Page do
+    Printer.def_visit Page do
       return 'Printing'
     end
     assert_equal NewPrinter.visit(@page),
@@ -127,21 +127,21 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_alias_visit
-    Printer.visit_for Page do
+    Printer.def_visit Page do
       # [...]
     end
-    Printer.send(:alias_visit, :print)
+    Printer.send(:alias_visit_method, :print)
     assert_respond_to Printer, :print, @page
 
-    Reader.visit_for Page do
+    Reader.def_visit Page do
       # [...]
     end
-    Reader.send(:alias_visit, :read)
+    Reader.send(:alias_visit_method, :read)
     assert_respond_to @reader, :read, @page
   end
 
   def test_add_visit_methods
-    Printer.visit_for Array do
+    Printer.def_visit Array do
       return 'Visiting an array'
     end
     assert_equal Printer.visit([]),
@@ -149,7 +149,7 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_remove_visit_methods
-    Printer.visit_for Page do
+    Printer.def_visit Page do
       'Printing'
     end
     Printer.remove_visit_method(Page)
@@ -159,7 +159,7 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_reset_visit_methods
-    Printer.visit_for Page do
+    Printer.def_visit Page do
       'Printing'
     end
     refute_empty Printer.visit_methods
@@ -168,7 +168,7 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_visit_methods
-    Printer.visit_for String, Array, Hash do
+    Printer.def_visit String, Array, Hash do
       # [...]
     end
     Printer.visit_methods.each do |method|
@@ -177,7 +177,7 @@ class VisitorTest < MiniTest::Test
   end
 
   def test_visitable_types
-    Printer.visit_for String, Array, Hash do
+    Printer.def_visit String, Array, Hash do
       # [...]
     end
     assert_equal Printer.visitable_types,

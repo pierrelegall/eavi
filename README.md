@@ -20,15 +20,15 @@ A visitor can be define like this:
 class Jsonifier
   include Eavi::Visitor
 
-  visit_for Array do |array|
+  def_visit Array do |array|
     # some code…
   end
 
-  visit_for Hash do |hash|
+  def_visit Hash do |hash|
     # some code…
   end
 
-  visit_for String, Fixnum do |string|
+  def_visit String, Fixnum do |string|
     # some code…
   end
 
@@ -57,7 +57,7 @@ And feel free to **alias the visit method**:
 module Jsonifier
   extend Eavi::Visitor
 
-  alias_visit :serialize
+  alias_visit_method :serialize
 
   # […]
 end

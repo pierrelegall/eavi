@@ -31,7 +31,7 @@ module Eavi
     # List of the methods extended by a Visitor.
     module ClassMethods
       # Alias the `visit` method.
-      def alias_visit(visit_method_alias)
+      def alias_visit_method(visit_method_alias)
         specialized_alias_visit_method(visit_method_alias)
       end
 
@@ -71,7 +71,8 @@ module Eavi
         end
       end
 
-      alias_method :visit_for, :add_visit_method
+      alias_method :def_visit, :add_visit_method
+      alias_method :undef_visit, :remove_visit_method
     end
 
     # List of the methods extended by a Visitor when included.
