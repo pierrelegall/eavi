@@ -59,10 +59,6 @@ module Jsonifier
 
   alias_visit :serialize
 
-  serialize_for Array do |array|
-    # some code…
-  end
-
   # […]
 end
 

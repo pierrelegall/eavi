@@ -78,11 +78,8 @@ module Eavi
     module ClassMethodsWhenIncluded
       private
 
-      def specialized_alias_visit(visit_alias)
-        visit_method_alias = visit_alias
-        visit_for_method_alias = (visit_alias.to_s + '_for').to_sym
+      def specialized_alias_visit_method(visit_method_alias)
         define_method(visit_method_alias, instance_method(:visit))
-        define_singleton_method(visit_for_method_alias, method(:visit_for))
       end
 
       def specialized_add_visit_method(klass, &block)
@@ -102,11 +99,8 @@ module Eavi
     module ClassMethodsWhenExtended
       private
 
-      def specialized_alias_visit(visit_alias)
-        visit_method_alias = visit_alias
-        visit_for_method_alias = (visit_alias.to_s + '_for').to_sym
+      def specialized_alias_visit_method(visit_method_alias)
         define_singleton_method(visit_method_alias, method(:visit))
-        define_singleton_method(visit_for_method_alias, method(:visit_for))
       end
 
       def specialized_add_visit_method(klass, &block)

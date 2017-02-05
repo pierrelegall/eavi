@@ -132,14 +132,12 @@ class VisitorTest < MiniTest::Test
     end
     Printer.send(:alias_visit, :print)
     assert_respond_to Printer, :print, @page
-    assert_respond_to Printer, :print_for, Page
 
     Reader.visit_for Page do
       # [...]
     end
     Reader.send(:alias_visit, :read)
     assert_respond_to @reader, :read, @page
-    assert_respond_to Reader, :read_for, Page
   end
 
   def test_add_visit_methods
