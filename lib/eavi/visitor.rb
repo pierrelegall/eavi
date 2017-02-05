@@ -2,11 +2,10 @@ require_relative 'visit_method_helper'
 require_relative 'no_visit_method_error'
 
 module Eavi
-  # The Visitor module can extend a module or include a class
+  # Extend a module/class or include a class with Visitor
   # to make it a dynamic visitor (see the OOP visitor pattern).
   module Visitor
-    # Calling visit execute the method associated with the
-    # type of +object+.
+    # Call the visit method associated with the type of +object+.
     def visit(object, *args, as: object.class)
       as.ancestors.each do |type|
         visit_method_name = VisitMethodHelper.gen_name(type)
@@ -30,18 +29,20 @@ module Eavi
       end
     end
 
-    # Class DSL methods
+    # Domain-Specific Language for the module/class
     module ClassDSL
+      # DSL method to add visit methods on types +types+.
       def def_visit(*types, &block)
         add_visit_method(*types, &block)
       end
 
+      # DSL method to remove visit methods on types +types+.
       def undef_visit(*types)
         remove_visit_method(*types)
       end
     end
 
-    # List of the methods extended by a Visitor.
+    # Extends if included or extended
     module ClassMethods
       # Alias the `visit` method.
       def alias_visit_method(visit_method_alias)
@@ -85,7 +86,7 @@ module Eavi
       end
     end
 
-    # List of the methods extended by a Visitor when included.
+    # Extends only when included
     module ClassMethodsWhenIncluded
       private
 
@@ -106,7 +107,7 @@ module Eavi
       end
     end
 
-    # List of the methods extended by a Visitor when included.
+    # Extends only when extended
     module ClassMethodsWhenExtended
       private
 
