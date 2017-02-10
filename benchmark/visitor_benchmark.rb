@@ -14,7 +14,7 @@ class Page3 < Page2; end
 class Printer
   extend Eavi::Visitor
 
-  visit_for Page0 do |page|
+  def_visit Page0 do |page|
     "Printing #{page}"
   end
 
@@ -26,7 +26,7 @@ end
 class Reader
   include Eavi::Visitor
 
-  visit_for Page0 do |page|
+  def_visit Page0 do |page|
     "Reading #{page}"
   end
 
