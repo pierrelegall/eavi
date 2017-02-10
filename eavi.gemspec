@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'eavi'
-  s.version     = '1.2.0'
-  s.date        = '2016-11-27'
+  s.version     = '2.0.0'
+  s.date        = '2017-02-11'
 
   s.summary     = 'A visitor pattern helper for Ruby.'
   s.description = 'Make the visitor pattern accessible and flexible in Ruby.'
