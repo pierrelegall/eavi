@@ -1,5 +1,5 @@
 module Eavi
-  # Error raised when a Visitor failed to visit an object.
+  # Error raised when a Visitor do not have a visit method to handle an object.
   class NoVisitMethodError < TypeError
     attr_reader :visitor, :visited, :visited_as
 
@@ -10,7 +10,7 @@ module Eavi
     end
 
     def to_s
-      "no method in #{@visitor} to visit as #{@visited_as}"
+      "no visit method in #{@visitor} for #{@visited_as} instances"
     end
   end
 end
