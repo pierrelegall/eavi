@@ -6,40 +6,62 @@ You can find [here](https://en.wikipedia.org/wiki/Visitor_pattern) the well docu
 
 ## Benefits
 
-- it **automatically cross the ancestors list (classes in the hierarchy and included modules)** to find a matching visit method (like a statically typed language does thanks to method overloading)
-- it **works without polluting visitable objects interface** with an `accept` method (not possible with a statically typed language like `C++` or `Java`); consequently it does not require to explicitly set visited objects visitable
-- it allows class instance visitors (when `Eavi::Visitor` is included) and singleton visitors (when `Eavi::Visitor` is extended), all-in-one
+- it **cross the ancestors list (classes and modules in the hierarchy)** to find an associated visit method (like overloading in some statically typed language)
+- it **works without polluting visitable objects interface** with an `accept` method; consequently all objects are potentially visitable
+- it allows class instance visitors (when `Eavi::Visitor` is included) and visitor modules (when `Eavi::Visitor` is extended), all-in-one module
 - it comes with its own little internal Domain-Specific Language (see code examples below)
 - it raises a custom error (`Eavi::NoVisitMethodError`, a subtype of `TypeError`) if a visitor cannot handle an object
 
 ## How to use
 
-A visitor can be define like this:
+A visitor can be defined like this:
 
 ```ruby
+# An object to JSON serializer example
 class Jsonifier
   include Eavi::Visitor
 
+  def_visit String do |object|
+    '"' + object.to_s + '"'
+  end
+
+  def_visit Integer, Float do |object|
+    object.to_s
+  end
+
   def_visit Array do |array|
-    # some code…
+    '[' + array.map { |e| visit(e) }.join(',') + ']'
   end
 
   def_visit Hash do |hash|
-    # some code…
+    '{' + hash.map do |key, value|
+      visit(key, as: String) + ':' + visit(value)
+    end.join(',') + '}'
   end
-
-  def_visit String, Fixnum do |string|
-    # some code…
-  end
-
-  # […]
 end
 
 jsonifier = Jsonifier.new
-jsonifier.visit(an_object)
+jsonifier.visit('foo')                         #=> '"foo"'
+jsonifier.visit(5)                             #=> '5'
+jsonifier.visit(7.5)                           #=> '7.5'
+jsonifier.visit([1, 2.5, 'bar'])               #=> '[1,2.5,"bar"]'
+jsonifier.visit({ a: 3, b: 4.5, c: 'baz' })    #=> '{"a":3,"b":4.5,"c":"baz"}'
+jsonifier.visit({ value: { a: 1, b: 'boo' } }) #=> '{"value":{"a":1,"b":"boo"}}'
+
+# jsonifier.visit(/this is a cool gem/)
+#=> raises "no visit method in #<Jsonifier:...> for Regexp instances (Eavi::NoVisitMethodError)"
+
+class Jsonifier
+  def_visit Object do |object|
+    raise "#{self} cannot handle #{object.class} objects"
+  end
+end
+
+jsonifier.visit(/this is a cool gem/)
+#=> raises "#<Jsonifier:...> cannot handle Regexp objects (RuntimeError)"
 ```
 
-You can **build a singleton visitor** too, using `extend` instead of `include`:
+You can **build a visitor module/class** too, using `extend` instead of `include`:
 
 ```ruby
 module Jsonifier
