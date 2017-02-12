@@ -1,35 +1,49 @@
 require_relative 'visit_method_helper'
 require_relative 'no_visit_method_error'
 
-module Risitor
-  # The Visitor module can extend a module or include a class
+module Eavi
+  # Extend a module/class or include a class with Visitor
   # to make it a dynamic visitor (see the OOP visitor pattern).
   module Visitor
-    # Calling visit execute the method associated with the
-    # type of +object+.
+    # Call the visit method associated with the type of +object+.
     def visit(object, *args, as: object.class)
       as.ancestors.each do |type|
-        visit_method = VisitMethodHelper.gen_name(type)
-        next unless respond_to?(visit_method)
-        return send(visit_method, object, *args)
+        visit_method_name = VisitMethodHelper.gen_name(type)
+        next unless respond_to?(visit_method_name)
+        return send(visit_method_name, object, *args)
       end
       raise NoVisitMethodError.new(self, object, as)
     end
 
     class << self
       def included(visitor)
-        visitor.extend(ClassMethods)
-        visitor.extend(ClassMethodsWhenIncluded)
+        visitor.extend(ModuleDSL)
+        visitor.extend(ModuleMethods)
+        visitor.extend(ModuleMethodsWhenIncluded)
       end
 
       def extended(visitor)
-        visitor.extend(ClassMethods)
-        visitor.extend(ClassMethodsWhenExtended)
+        visitor.extend(ModuleDSL)
+        visitor.extend(ModuleMethods)
+        visitor.extend(ModuleMethodsWhenExtended)
       end
     end
 
-    # List of the methods extended by a Visitor.
-    module ClassMethods
+    # Domain-Specific Language for the module/class
+    module ModuleDSL
+      # DSL method to add visit methods on types +types+.
+      def def_visit(*types, &block)
+        add_visit_method(*types, &block)
+      end
+
+      # DSL method to remove visit methods on types +types+.
+      def undef_visit(*types)
+        remove_visit_method(*types)
+      end
+    end
+
+    # Extends if included or extended
+    module ModuleMethods
       # Alias the `visit` method.
       def alias_visit_method(visit_method_alias)
         specialized_alias_visit_method(visit_method_alias)
@@ -70,24 +84,22 @@ module Risitor
           VisitMethodHelper.get_type(visit_method)
         end
       end
-
-      alias_method :when_visiting, :add_visit_method
     end
 
-    # List of the methods extended by a Visitor when included.
-    module ClassMethodsWhenIncluded
+    # Extends only when included
+    module ModuleMethodsWhenIncluded
       private
 
       def specialized_alias_visit_method(visit_method_alias)
         define_method(visit_method_alias, instance_method(:visit))
       end
 
-      def specialized_add_visit_method(klass, &block)
-        define_method(VisitMethodHelper.gen_name(klass), block)
+      def specialized_add_visit_method(type, &block)
+        define_method(VisitMethodHelper.gen_name(type), block)
       end
 
-      def specialized_remove_visit_method(klass)
-        remove_method(VisitMethodHelper.gen_name(klass))
+      def specialized_remove_visit_method(type)
+        remove_method(VisitMethodHelper.gen_name(type))
       end
 
       def specialized_remove_method(visit_method)
@@ -95,20 +107,20 @@ module Risitor
       end
     end
 
-    # List of the methods extended by a Visitor when included.
-    module ClassMethodsWhenExtended
+    # Extends only when extended
+    module ModuleMethodsWhenExtended
       private
 
       def specialized_alias_visit_method(visit_method_alias)
         define_singleton_method(visit_method_alias, method(:visit))
       end
 
-      def specialized_add_visit_method(klass, &block)
-        define_singleton_method(VisitMethodHelper.gen_name(klass), block)
+      def specialized_add_visit_method(type, &block)
+        define_singleton_method(VisitMethodHelper.gen_name(type), block)
       end
 
-      def specialized_remove_visit_method(klass)
-        singleton_class.send(:remove_method, VisitMethodHelper.gen_name(klass))
+      def specialized_remove_visit_method(type)
+        singleton_class.send(:remove_method, VisitMethodHelper.gen_name(type))
       end
 
       def specialized_remove_method(visit_method)
@@ -116,6 +128,4 @@ module Risitor
       end
     end
   end
-
-  Base = Visitor
 end

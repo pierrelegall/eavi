@@ -1,26 +1,26 @@
-require_relative '../lib/risitor/visitor'
+require_relative '../lib/eavi/visitor'
 
-module Risitor
+module Eavi
   module Fixtures
     class Page
     end
 
     class Reader
-      include Risitor::Base
+      include Eavi::Visitor
 
-      when_visiting Page do
+      def_visit Page do
         'Reading'
       end
     end
 
     class Printer
-      extend Risitor::Base
+      extend Eavi::Visitor
 
-      when_visiting Page do |page|
+      def_visit Page do |page|
         "Printing #{page}"
       end
 
-      when_visiting String do |string, capitalize|
+      def_visit String do |string, capitalize|
         string = string.capitalize if capitalize
         return string
       end

@@ -1,4 +1,4 @@
-require_relative '../lib/risitor/visitor'
+require_relative '../lib/eavi/visitor'
 
 require 'benchmark'
 
@@ -12,9 +12,9 @@ class Page2 < Page1; end
 class Page3 < Page2; end
 
 class Printer
-  extend Risitor::Base
+  extend Eavi::Visitor
 
-  when_visiting Page0 do |page|
+  def_visit Page0 do |page|
     "Printing #{page}"
   end
 
@@ -24,9 +24,9 @@ class Printer
 end
 
 class Reader
-  include Risitor::Base
+  include Eavi::Visitor
 
-  when_visiting Page0 do |page|
+  def_visit Page0 do |page|
     "Reading #{page}"
   end
 
@@ -97,8 +97,8 @@ average_when_extended =
 
 average = (average_when_extended + average_when_included) / 2
 
-puts "Average at depth 0:    #{average_at_depth0.round(2)}x slower"
-puts "Average at depth 3:    #{average_at_depth3.round(2)}x slower"
-puts "Average when extended: #{average_when_extended.round(2)}x slower"
-puts "Average when included: #{average_when_included.round(2)}x slower"
-puts "Total average:         #{average.round(2)}x slower"
+puts "- Average at depth 0:    #{average_at_depth0.round(2)}x slower"
+puts "- Average at depth 3:    #{average_at_depth3.round(2)}x slower"
+puts "- Average when extended: #{average_when_extended.round(2)}x slower"
+puts "- Average when included: #{average_when_included.round(2)}x slower"
+puts "- Total average:         #{average.round(2)}x slower"
