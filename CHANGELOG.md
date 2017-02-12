@@ -1,4 +1,10 @@
-# v1.2
+# v2.0.0
+- Gem renamed Eavi
+- NoVisitMethodError inherits form TypeError now (breaking change)
+- Better DSL (breaking change)
+- Better README
+
+# v1.2.0
 - [IMPROVEMENT] Guard project setup
 - [IMPROVEMENT] Better code style thanks to RuboCop
 
