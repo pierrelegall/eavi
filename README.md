@@ -48,7 +48,7 @@ jsonifier.visit([1, 2.5, 'bar'])               #=> '[1,2.5,"bar"]'
 jsonifier.visit({ a: 3, b: 4.5, c: 'baz' })    #=> '{"a":3,"b":4.5,"c":"baz"}'
 jsonifier.visit({ value: { a: 1, b: 'boo' } }) #=> '{"value":{"a":1,"b":"boo"}}'
 
-# jsonifier.visit(/this is a cool gem/)
+jsonifier.visit(/this is a cool gem/)
 #=> raises "no visit method in #<Jsonifier:...> for Regexp instances (Eavi::NoVisitMethodError)"
 
 class Jsonifier

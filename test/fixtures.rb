@@ -1,35 +1,27 @@
 require_relative '../lib/eavi/visitor'
 
-module Eavi
-  module Fixtures
-    class Page
-    end
+# A type of visitors
+class Reader
+  include Eavi::Visitor
+end
 
-    class Reader
-      include Eavi::Visitor
+# A subtype of a class of visitors
+class NiceReader < Reader
+end
 
-      def_visit Page do
-        'Reading'
-      end
-    end
+# A singleton visitor
+class Printer
+  extend Eavi::Visitor
+end
 
-    class Printer
-      extend Eavi::Visitor
+# A subtype of a singleton visitor
+class NicePrinter < Printer
+end
 
-      def_visit Page do |page|
-        "Printing #{page}"
-      end
+# A type of visited object
+class Page
+end
 
-      def_visit String do |string, capitalize|
-        string = string.capitalize if capitalize
-        return string
-      end
-    end
-
-    class NewReader < Reader
-    end
-
-    class NewPrinter < Printer
-    end
-  end
+# A subtype of visited object
+class NicePage < Page
 end
