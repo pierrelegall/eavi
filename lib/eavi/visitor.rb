@@ -51,7 +51,10 @@ module Eavi
 
       # Add/override a visit method for the types +types+.
       def add_visit_method(*types, &block)
-        block = block.curry(1) if block.arity.zero?
+        if block.arity.zero?
+          original_block = block
+          block = proc { |_| instance_exec(&original_block) }
+        end
         types.each do |type|
           specialized_add_visit_method(type, &block)
         end
