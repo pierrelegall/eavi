@@ -76,9 +76,7 @@ module Eavi
 
       # Return a list of the visit method.
       def visit_methods
-        return methods.select do |method|
-          VisitMethodHelper.match(method)
-        end
+        specialized_visit_methods
       end
 
       # Return a list of the types with a visit method.
@@ -108,6 +106,12 @@ module Eavi
       def specialized_remove_method(visit_method)
         remove_method(visit_method)
       end
+
+      def specialized_visit_methods
+        return instance_methods.select do |method|
+          VisitMethodHelper.match(method)
+        end
+      end
     end
 
     # Extends only when extended
@@ -128,6 +132,12 @@ module Eavi
 
       def specialized_remove_method(visit_method)
         singleton_class.send(:remove_method, visit_method)
+      end
+
+      def specialized_visit_methods
+        return methods.select do |method|
+          VisitMethodHelper.match(method)
+        end
       end
     end
   end
