@@ -1,3 +1,8 @@
+# v2.0.1
+- Fix the `self` reference problem in arity zero visit methods
+- Fix Visitor#visit_methods (when included)
+- Much better test coverage
+
 # v2.0.0
 - Gem renamed Eavi
 - NoVisitMethodError inherits form TypeError now (breaking change)

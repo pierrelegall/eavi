@@ -51,9 +51,12 @@ module Eavi
 
       # Add/override a visit method for the types +types+.
       def add_visit_method(*types, &block)
-        block = block.curry(1) if block.arity.zero?
+        if block.arity.zero?
+          original_block = block
+          block = proc { |_| instance_exec(&original_block) }
+        end
         types.each do |type|
-          specialized_add_visit_method(type, &block)
+          specialized_add_visit_method(type, block)
         end
       end
 
@@ -73,9 +76,7 @@ module Eavi
 
       # Return a list of the visit method.
       def visit_methods
-        return methods.select do |method|
-          VisitMethodHelper.match(method)
-        end
+        specialized_visit_methods
       end
 
       # Return a list of the types with a visit method.
@@ -94,7 +95,7 @@ module Eavi
         define_method(visit_method_alias, instance_method(:visit))
       end
 
-      def specialized_add_visit_method(type, &block)
+      def specialized_add_visit_method(type, block)
         define_method(VisitMethodHelper.gen_name(type), block)
       end
 
@@ -104,6 +105,12 @@ module Eavi
 
       def specialized_remove_method(visit_method)
         remove_method(visit_method)
+      end
+
+      def specialized_visit_methods
+        return instance_methods.select do |method|
+          VisitMethodHelper.match(method)
+        end
       end
     end
 
@@ -115,7 +122,7 @@ module Eavi
         define_singleton_method(visit_method_alias, method(:visit))
       end
 
-      def specialized_add_visit_method(type, &block)
+      def specialized_add_visit_method(type, block)
         define_singleton_method(VisitMethodHelper.gen_name(type), block)
       end
 
@@ -125,6 +132,12 @@ module Eavi
 
       def specialized_remove_method(visit_method)
         singleton_class.send(:remove_method, visit_method)
+      end
+
+      def specialized_visit_methods
+        return methods.select do |method|
+          VisitMethodHelper.match(method)
+        end
       end
     end
   end
