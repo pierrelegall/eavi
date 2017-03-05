@@ -56,7 +56,7 @@ module Eavi
           block = proc { |_| instance_exec(&original_block) }
         end
         types.each do |type|
-          specialized_add_visit_method(type, &block)
+          specialized_add_visit_method(type, block)
         end
       end
 
@@ -95,7 +95,7 @@ module Eavi
         define_method(visit_method_alias, instance_method(:visit))
       end
 
-      def specialized_add_visit_method(type, &block)
+      def specialized_add_visit_method(type, block)
         define_method(VisitMethodHelper.gen_name(type), block)
       end
 
@@ -122,7 +122,7 @@ module Eavi
         define_singleton_method(visit_method_alias, method(:visit))
       end
 
-      def specialized_add_visit_method(type, &block)
+      def specialized_add_visit_method(type, block)
         define_singleton_method(VisitMethodHelper.gen_name(type), block)
       end
 
