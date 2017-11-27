@@ -22,20 +22,20 @@ module Eavi
 
     class << self
       def included(visitor)
-        visitor.extend(ModuleDSL)
-        visitor.extend(ModuleMethods)
-        visitor.extend(ModuleMethodsWhenIncluded)
+        visitor.extend(DSL)
+        visitor.extend(MethodsWhenIncludedAndExtended)
+        visitor.extend(MethodsWhenIncluded)
       end
 
       def extended(visitor)
-        visitor.extend(ModuleDSL)
-        visitor.extend(ModuleMethods)
-        visitor.extend(ModuleMethodsWhenExtended)
+        visitor.extend(DSL)
+        visitor.extend(MethodsWhenIncludedAndExtended)
+        visitor.extend(MethodsWhenExtended)
       end
     end
 
-    # Domain-Specific Language for the module/class
-    module ModuleDSL
+    # DSL methods
+    module DSL
       # DSL method to add visit methods on types +types+.
       #
       # @param [Array<Class>] *types Types attached to the new visit method
@@ -53,7 +53,7 @@ module Eavi
     end
 
     # Extends if included or extended
-    module ModuleMethods
+    module MethodsWhenIncludedAndExtended
       # Alias the `visit` method.
       def alias_visit_method(visit_method_alias)
         specialized_alias_visit_method(visit_method_alias)
@@ -98,7 +98,7 @@ module Eavi
     end
 
     # Extends only when included
-    module ModuleMethodsWhenIncluded
+    module MethodsWhenIncluded
       private
 
       def specialized_alias_visit_method(visit_method_alias)
@@ -125,7 +125,7 @@ module Eavi
     end
 
     # Extends only when extended
-    module ModuleMethodsWhenExtended
+    module MethodsWhenExtended
       private
 
       def specialized_alias_visit_method(visit_method_alias)
