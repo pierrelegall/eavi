@@ -66,10 +66,6 @@ describe Eavi::Visitor do
         assert_raises Eavi::NoVisitMethodError do
           @reader.visit(@page, as: String)
         end
-
-        assert_raises TypeError do
-          raise Eavi::NoVisitMethodError.new(nil, nil, nil)
-        end
       end
 
       it 'has self as the visitor instance in blocks (with first arg)' do
@@ -266,10 +262,6 @@ describe Eavi::Visitor do
         end
         assert_raises Eavi::NoVisitMethodError do
           Printer.visit(@page, as: String)
-        end
-
-        assert_raises TypeError do
-          raise Eavi::NoVisitMethodError.new(nil, nil, nil)
         end
       end
 
