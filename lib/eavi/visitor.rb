@@ -6,6 +6,11 @@ module Eavi
   # to make it a dynamic visitor (see the OOP visitor pattern).
   module Visitor
     # Call the visit method associated with the type of +object+.
+    #
+    # @param [Object] object The object to visit
+    # @param [Object] *args The arguments passed to the called visit method
+    # @param [Class] as: The class which the visit method is attached
+    # @returns The result of the called visit method
     def visit(object, *args, as: object.class)
       as.ancestors.each do |type|
         visit_method_name = VisitMethodHelper.gen_name(type)
@@ -32,11 +37,16 @@ module Eavi
     # Domain-Specific Language for the module/class
     module ModuleDSL
       # DSL method to add visit methods on types +types+.
+      #
+      # @param [Array<Class>] *types Types attached to the new visit method
+      # @param [Proc] block The content of the visit method
       def def_visit(*types, &block)
         add_visit_method(*types, &block)
       end
 
       # DSL method to remove visit methods on types +types+.
+      #
+      # @param [Array<Class>] *types Types attached to the removed visit method
       def undef_visit(*types)
         remove_visit_method(*types)
       end
