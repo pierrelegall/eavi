@@ -42,7 +42,7 @@ describe Eavi::Visitor do
         assert_equal @nice_reader.visit(@nice_page), 'Reading'
       end
 
-      it 'visit as something else if asked for' do
+      it 'visit as something else if asked explicitly' do
         Reader.class_eval do
           def_visit Page do
             'As page'
@@ -239,7 +239,7 @@ describe Eavi::Visitor do
         assert_equal NicePrinter.visit(@nice_page), 'Printing'
       end
 
-      it 'visit as something else if asked for' do
+      it 'visit as something else if asked explicitly' do
         Printer.class_eval do
           def_visit Page do
             'As page'
