@@ -84,12 +84,12 @@ module Eavi
         end
       end
 
-      # Return a list of the visit method.
+      # Returns a list of the visit method.
       def visit_methods
         specialized_visit_methods
       end
 
-      # Return a list of the types with a visit method.
+      # Returns a list of the types with a visit method.
       def visitable_types
         return visit_methods.collect do |visit_method|
           VisitMethodHelper.get_type(visit_method)
