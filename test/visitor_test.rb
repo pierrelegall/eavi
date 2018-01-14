@@ -42,7 +42,7 @@ describe Eavi::Visitor do
         assert_equal @nice_reader.visit(@nice_page), 'Reading'
       end
 
-      it 'visit as something else if asked for' do
+      it 'visit as something else if asked explicitly' do
         Reader.class_eval do
           def_visit Page do
             'As page'
@@ -65,10 +65,6 @@ describe Eavi::Visitor do
         end
         assert_raises Eavi::NoVisitMethodError do
           @reader.visit(@page, as: String)
-        end
-
-        assert_raises TypeError do
-          raise Eavi::NoVisitMethodError.new(nil, nil, nil)
         end
       end
 
@@ -243,7 +239,7 @@ describe Eavi::Visitor do
         assert_equal NicePrinter.visit(@nice_page), 'Printing'
       end
 
-      it 'visit as something else if asked for' do
+      it 'visit as something else if asked explicitly' do
         Printer.class_eval do
           def_visit Page do
             'As page'
@@ -266,10 +262,6 @@ describe Eavi::Visitor do
         end
         assert_raises Eavi::NoVisitMethodError do
           Printer.visit(@page, as: String)
-        end
-
-        assert_raises TypeError do
-          raise Eavi::NoVisitMethodError.new(nil, nil, nil)
         end
       end
 

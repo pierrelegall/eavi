@@ -7,9 +7,9 @@ You can find [here](https://en.wikipedia.org/wiki/Visitor_pattern) the well docu
 ## Benefits
 
 - it **cross the ancestors list (classes and modules in the hierarchy)** to find an associated visit method (like overloading in some statically typed language)
-- it **works without polluting visitable objects interface** with an `accept` method; consequently all objects are potentially visitable
-- it allows class instance visitors (when `Eavi::Visitor` is included) and visitor modules (when `Eavi::Visitor` is extended), all-in-one module
-- it comes with its own little internal Domain-Specific Language (see code examples below)
+- it **works without polluting visitable objects interface** with an `accept` method; consequently all objects are visitable
+- it allows visitors as class instances (when `Eavi::Visitor` is included) and visitors as modules (when `Eavi::Visitor` is extended), all-in-one gem
+- it comes with an explicit API, let's call it a DSL (see code examples below)
 - it raises a custom error (`Eavi::NoVisitMethodError`, a subtype of `TypeError`) if a visitor cannot handle an object
 
 ## How to use
