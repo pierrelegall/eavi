@@ -6,6 +6,11 @@ module Eavi
   # to make it a dynamic visitor (see the OOP visitor pattern).
   module Visitor
     # Call the visit method associated with the type of +object+.
+    #
+    # @param [Object] object The object to visit
+    # @param [Object] *args The arguments passed to the called visit method
+    # @param [Class] as: The class which the visit method is attached
+    # @returns The result of the called visit method
     def visit(object, *args, as: object.class)
       as.ancestors.each do |type|
         visit_method_name = VisitMethodHelper.gen_name(type)
@@ -17,33 +22,38 @@ module Eavi
 
     class << self
       def included(visitor)
-        visitor.extend(ModuleDSL)
-        visitor.extend(ModuleMethods)
-        visitor.extend(ModuleMethodsWhenIncluded)
+        visitor.extend(DSL)
+        visitor.extend(MethodsWhenIncludedAndExtended)
+        visitor.extend(MethodsWhenIncluded)
       end
 
       def extended(visitor)
-        visitor.extend(ModuleDSL)
-        visitor.extend(ModuleMethods)
-        visitor.extend(ModuleMethodsWhenExtended)
+        visitor.extend(DSL)
+        visitor.extend(MethodsWhenIncludedAndExtended)
+        visitor.extend(MethodsWhenExtended)
       end
     end
 
-    # Domain-Specific Language for the module/class
-    module ModuleDSL
+    # DSL methods
+    module DSL
       # DSL method to add visit methods on types +types+.
+      #
+      # @param [Array<Class>] *types Types attached to the new visit method
+      # @param [Proc] block The content of the visit method
       def def_visit(*types, &block)
         add_visit_method(*types, &block)
       end
 
       # DSL method to remove visit methods on types +types+.
+      #
+      # @param [Array<Class>] *types Types attached to the removed visit method
       def undef_visit(*types)
         remove_visit_method(*types)
       end
     end
 
     # Extends if included or extended
-    module ModuleMethods
+    module MethodsWhenIncludedAndExtended
       # Alias the `visit` method.
       def alias_visit_method(visit_method_alias)
         specialized_alias_visit_method(visit_method_alias)
@@ -74,12 +84,12 @@ module Eavi
         end
       end
 
-      # Return a list of the visit method.
+      # Returns a list of the visit method.
       def visit_methods
         specialized_visit_methods
       end
 
-      # Return a list of the types with a visit method.
+      # Returns a list of the types with a visit method.
       def visitable_types
         return visit_methods.collect do |visit_method|
           VisitMethodHelper.get_type(visit_method)
@@ -88,7 +98,7 @@ module Eavi
     end
 
     # Extends only when included
-    module ModuleMethodsWhenIncluded
+    module MethodsWhenIncluded
       private
 
       def specialized_alias_visit_method(visit_method_alias)
@@ -115,7 +125,7 @@ module Eavi
     end
 
     # Extends only when extended
-    module ModuleMethodsWhenExtended
+    module MethodsWhenExtended
       private
 
       def specialized_alias_visit_method(visit_method_alias)

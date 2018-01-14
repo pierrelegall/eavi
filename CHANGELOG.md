@@ -1,3 +1,9 @@
+# v2.0.2
+- More documentation
+- Better readme
+- Better module naming
+- Separation of Visitor and NoVisitMethodError tests
+
 # v2.0.1
 - Fix the `self` reference problem in arity zero visit methods
 - Fix Visitor#visit_methods (when included)
