@@ -16,14 +16,15 @@ describe Eavi::Visitor do
     it 'respects the interface' do
       assert_respond_to @reader, :visit
       refute_respond_to Reader, :visit
-
       assert_respond_to Reader, :alias_visit_method
       assert_respond_to Reader, :add_visit_method
       assert_respond_to Reader, :remove_visit_method
       assert_respond_to Reader, :reset_visit_methods
       assert_respond_to Reader, :visit_methods
       assert_respond_to Reader, :visitable_types
+    end
 
+    it 'has a DSL' do
       assert_respond_to Reader, :def_visit
       assert_respond_to Reader, :undef_visit
     end
@@ -57,12 +58,18 @@ describe Eavi::Visitor do
       end
 
       it 'raises error when trying to visit without visit method' do
+        assert_empty Reader.visit_methods
+
         assert_raises Eavi::NoVisitMethodError do
           @reader.visit('string')
         end
-        assert_raises Eavi::NoVisitMethodError do
-          @reader.visit('string', as: String)
+
+        Reader.class_eval do
+          def_visit Page do
+            'Reading'
+          end
         end
+
         assert_raises Eavi::NoVisitMethodError do
           @reader.visit(@page, as: String)
         end
@@ -88,7 +95,7 @@ describe Eavi::Visitor do
         assert_same @reader.visit(@page), @reader
       end
 
-      it 'can return arguments, not a copy' do
+      it 'can return arguments (not a copy)' do
         Reader.class_eval do
           def_visit Page do |page|
             page
@@ -133,6 +140,10 @@ describe Eavi::Visitor do
 
     describe '.add_visit_method' do
       it do
+        assert_raises Eavi::NoVisitMethodError do
+          @reader.visit([])
+        end
+
         Reader.class_eval do
           def_visit Array do
             'Visiting an array'
@@ -160,6 +171,8 @@ describe Eavi::Visitor do
 
     describe '.visit_methods' do
       it do
+        assert_equal Reader.visit_methods.size, 0
+
         Reader.class_eval do
           def_visit String, Array, Hash do
             # [...]
@@ -175,8 +188,10 @@ describe Eavi::Visitor do
 
     describe '.reset_visit_methods' do
       it do
+        assert_empty Reader.visit_methods
+
         Reader.class_eval do
-          def_visit Page do
+          def_visit Page, Array, Hash do
             'Printing'
           end
         end
@@ -191,12 +206,15 @@ describe Eavi::Visitor do
 
     describe '.visitable_types' do
       it do
+        assert_empty Reader.visitable_types
+
         Reader.class_eval do
           def_visit String, Array, Hash do
             # [...]
           end
         end
 
+        assert_equal Reader.visitable_types.size, 3
         assert_includes Reader.visitable_types, String
         assert_includes Reader.visitable_types, Array
         assert_includes Reader.visitable_types, Hash
@@ -213,14 +231,15 @@ describe Eavi::Visitor do
 
     it 'respects the interface' do
       assert_respond_to Printer, :visit
-
       assert_respond_to Printer, :alias_visit_method
       assert_respond_to Printer, :add_visit_method
       assert_respond_to Printer, :remove_visit_method
       assert_respond_to Printer, :reset_visit_methods
       assert_respond_to Printer, :visit_methods
       assert_respond_to Printer, :visitable_types
+    end
 
+    it 'has a DSL' do
       assert_respond_to Printer, :def_visit
       assert_respond_to Printer, :undef_visit
     end
@@ -254,12 +273,18 @@ describe Eavi::Visitor do
       end
 
       it 'raises error when trying to visit without visit method' do
+        assert_empty Printer.visit_methods
+
         assert_raises Eavi::NoVisitMethodError do
           Printer.visit('string')
         end
-        assert_raises Eavi::NoVisitMethodError do
-          Printer.visit('string', as: String)
+
+        Printer.class_eval do
+          def_visit Page do
+            'Reading'
+          end
         end
+
         assert_raises Eavi::NoVisitMethodError do
           Printer.visit(@page, as: String)
         end
@@ -285,7 +310,7 @@ describe Eavi::Visitor do
         assert_same Printer.visit(@page), Printer
       end
 
-      it 'can return arguments, not a copy' do
+      it 'can return arguments (not a copy)' do
         Printer.class_eval do
           def_visit Page do |page|
             page
@@ -330,6 +355,10 @@ describe Eavi::Visitor do
 
     describe '.add_visit_method' do
       it do
+        assert_raises Eavi::NoVisitMethodError do
+          Printer.visit([])
+        end
+
         Printer.class_eval do
           def_visit Array do
             'Visiting an array'
@@ -357,6 +386,8 @@ describe Eavi::Visitor do
 
     describe '.visit_methods' do
       it do
+        assert_empty Printer.visit_methods
+
         Printer.class_eval do
           def_visit String, Array, Hash do
             # [...]
@@ -372,8 +403,10 @@ describe Eavi::Visitor do
 
     describe '.reset_visit_methods' do
       it do
+        assert_empty Printer.visit_methods
+
         Printer.class_eval do
-          def_visit Page do
+          def_visit Page, Array, Hash do
             'Printing'
           end
         end
@@ -388,12 +421,15 @@ describe Eavi::Visitor do
 
     describe '.visitable_types' do
       it do
+        assert_equal Printer.visitable_types.size, 0
+
         Printer.class_eval do
           def_visit String, Array, Hash do
             # [...]
           end
         end
 
+        assert_equal Printer.visitable_types.size, 3
         assert_includes Printer.visitable_types, String
         assert_includes Printer.visitable_types, Array
         assert_includes Printer.visitable_types, Hash
