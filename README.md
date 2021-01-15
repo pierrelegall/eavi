@@ -81,6 +81,10 @@ module Jsonifier
 
   alias_visit_method :serialize
 
+  def_serialize String do |object|
+    '"' + object.to_s + '"'
+  end
+
   # […]
 end
 

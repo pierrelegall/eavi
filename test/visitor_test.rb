@@ -135,13 +135,11 @@ describe Eavi::Visitor do
       it do
         Reader.class_eval do
           alias_visit_method :read
-
-          def_visit Page do
-            # [...]
-          end
         end
 
         assert_respond_to @reader, :read
+        assert_respond_to Reader, :def_read
+        assert_respond_to Reader, :undef_read
       end
     end
 
@@ -350,13 +348,11 @@ describe Eavi::Visitor do
       it do
         Printer.class_eval do
           alias_visit_method :print
-
-          def_visit Page do
-            # [...]
-          end
         end
 
         assert_respond_to Printer, :print
+        assert_respond_to Printer, :def_print
+        assert_respond_to Printer, :undef_print
       end
     end
 
