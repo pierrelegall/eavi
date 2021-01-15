@@ -105,6 +105,8 @@ The **depth** is the number of tries before matching an existing visit method us
 
 This benchmark shows that a visit method call is **on average only 4x slower** than a standard method call.
 
+The benchmark is located in the `benchmark` folder and can be run with `rake run:benchmark`.
+
 ## License
 
 Eavi is licensed under the MIT License.
