@@ -2,7 +2,7 @@ module Eavi
   # Helper for visit methods generation, matching & co.
   module VisitMethodHelper
     TEMPLATE = 'visit[%s]'.freeze
-    REGEXP = /^visit\[(.*)\]$/
+    REGEXP = /^visit\[(.*)\]$/.freeze
 
     # Returns a visit method name for the type +type+.
     def self.gen_name(type)
