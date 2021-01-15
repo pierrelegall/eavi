@@ -15,13 +15,20 @@ describe Eavi::Visitor do
 
     it 'respects the interface' do
       assert_respond_to @reader, :visit
-      refute_respond_to Reader, :visit
       assert_respond_to Reader, :alias_visit_method
       assert_respond_to Reader, :add_visit_method
       assert_respond_to Reader, :remove_visit_method
       assert_respond_to Reader, :reset_visit_methods
       assert_respond_to Reader, :visit_methods
       assert_respond_to Reader, :visitable_types
+
+      refute_respond_to Reader, :visit
+      refute_respond_to @reader, :alias_visit_method
+      refute_respond_to @reader, :add_visit_method
+      refute_respond_to @reader, :remove_visit_method
+      refute_respond_to @reader, :reset_visit_methods
+      refute_respond_to @reader, :visit_methods
+      refute_respond_to @reader, :visitable_type
     end
 
     it 'has a DSL' do
