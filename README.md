@@ -93,21 +93,21 @@ Jsonifier.serialize(an_object)
 
 ## Benchmark
 
-This is a benchmark output (MRI 2.3, i5-4670K 3.40GHz CPU):
+This is a benchmark output (MRI 3.0.3p157, i7-7500U CPU @ 2.70GHz):
 
 > This benchmark compare the speed of a visit call and a standard method call.
 >
 > Benchmarking…
 >
-> - Average at depth 0:    2.6x slower
-> - Average at depth 3:    5.45x slower
-> - Average when extended: 3.94x slower
-> - Average when included: 4.11x slower
-> - Total average:         4.02x slower
+> - Average at depth 0:    22.38x slower
+> - Average at depth 3:    56.66x slower
+> - Average when extended: 38.21x slower
+> - Average when included: 40.83x slower
+> - Global average:        39.52x slower
 
-The **depth** is the number of tries before matching an existing visit method using the visited object's ancestors' list.
+The **depth** is the number of digs before matching an existing visit method using the visited object's ancestors' list.
 
-This benchmark shows that a visit method call is **on average only 4x slower** than a standard method call.
+This benchmark shows that a visit method call is **on average 40x slower** than a standard method call (the call only, not the body of the method).
 
 The benchmark is located in the `benchmark` folder and can be run with `rake run:benchmark`.
 
