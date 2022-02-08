@@ -1,10 +1,10 @@
-require 'minitest/autorun'
+require "minitest/autorun"
 
-require_relative '../lib/eavi/visitor'
-require_relative 'fixtures'
+require_relative "../lib/eavi/visitor"
+require_relative "fixtures"
 
 describe Eavi::Visitor do
-  describe 'when included' do
+  describe "when included" do
     before :each do
       Reader.reset_visit_methods
       @reader = Reader.new
@@ -13,7 +13,7 @@ describe Eavi::Visitor do
       @nice_page = NicePage.new
     end
 
-    it 'respects the interface' do
+    it "respects the interface" do
       assert_respond_to @reader, :visit
       assert_respond_to Reader, :alias_visit_method
       assert_respond_to Reader, :add_visit_method
@@ -31,49 +31,49 @@ describe Eavi::Visitor do
       refute_respond_to @reader, :visitable_type
     end
 
-    it 'has a DSL' do
+    it "has a DSL" do
       assert_respond_to Reader, :def_visit
       assert_respond_to Reader, :undef_visit
     end
 
-    describe '#visit' do
-      it 'call the visit method for the appropriate type' do
+    describe "#visit" do
+      it "call the visit method for the appropriate type" do
         Reader.class_eval do
           def_visit Page do
-            'Reading'
+            "Reading"
           end
         end
 
-        assert_equal @reader.visit(@page), 'Reading'
-        assert_equal @reader.visit(@nice_page), 'Reading'
-        assert_equal @nice_reader.visit(@page), 'Reading'
-        assert_equal @nice_reader.visit(@nice_page), 'Reading'
+        assert_equal @reader.visit(@page), "Reading"
+        assert_equal @reader.visit(@nice_page), "Reading"
+        assert_equal @nice_reader.visit(@page), "Reading"
+        assert_equal @nice_reader.visit(@nice_page), "Reading"
       end
 
-      it 'visit as something else if asked explicitly' do
+      it "visit as something else if asked explicitly" do
         Reader.class_eval do
           def_visit Page do
-            'As page'
+            "As page"
           end
 
           def_visit String do
-            'As string'
+            "As string"
           end
         end
 
-        assert_equal @reader.visit(@page, as: String), 'As string'
+        assert_equal @reader.visit(@page, as: String), "As string"
       end
 
-      it 'raises error when trying to visit without visit method' do
+      it "raises error when trying to visit without visit method" do
         assert_empty Reader.visit_methods
 
         assert_raises Eavi::NoVisitMethodError do
-          @reader.visit('string')
+          @reader.visit("string")
         end
 
         Reader.class_eval do
           def_visit Page do
-            'Reading'
+            "Reading"
           end
         end
 
@@ -82,7 +82,7 @@ describe Eavi::Visitor do
         end
       end
 
-      it 'has self as the visitor instance in blocks (with first arg)' do
+      it "has self as the visitor instance in blocks (with first arg)" do
         Reader.class_eval do
           def_visit Page do |_|
             self
@@ -92,7 +92,7 @@ describe Eavi::Visitor do
         assert_same @reader.visit(@page), @reader
       end
 
-      it 'has self as the visitor instance in blocks (without first arg)' do
+      it "has self as the visitor instance in blocks (without first arg)" do
         Reader.class_eval do
           def_visit Page do
             self
@@ -102,7 +102,7 @@ describe Eavi::Visitor do
         assert_same @reader.visit(@page), @reader
       end
 
-      it 'can return arguments (not a copy)' do
+      it "can return arguments (not a copy)" do
         Reader.class_eval do
           def_visit Page do |page|
             page
@@ -112,14 +112,14 @@ describe Eavi::Visitor do
         assert_same @reader.visit(@page), @page
       end
 
-      it 'uses the following arguments of given blocks' do
+      it "uses the following arguments of given blocks" do
         Reader.class_eval do
           def_visit String do |_, a, b|
             { a: a, b: b }
           end
         end
 
-        assert_equal @reader.visit('something', 1, 2), { a: 1, b: 2 }
+        assert_equal @reader.visit("something", 1, 2), { a: 1, b: 2 }
 
         Reader.class_eval do
           def_visit String do |_, *args|
@@ -127,11 +127,11 @@ describe Eavi::Visitor do
           end
         end
 
-        assert_equal @reader.visit('something', 1, 2), [1, 2]
+        assert_equal @reader.visit("something", 1, 2), [1, 2]
       end
     end
 
-    describe '.alias_visit_method' do
+    describe ".alias_visit_method" do
       it do
         Reader.class_eval do
           alias_visit_method :read
@@ -143,7 +143,7 @@ describe Eavi::Visitor do
       end
     end
 
-    describe '.add_visit_method' do
+    describe ".add_visit_method" do
       it do
         assert_raises Eavi::NoVisitMethodError do
           @reader.visit([])
@@ -151,19 +151,19 @@ describe Eavi::Visitor do
 
         Reader.class_eval do
           def_visit Array do
-            'Visiting an array'
+            "Visiting an array"
           end
         end
 
-        assert_equal @reader.visit([]), 'Visiting an array'
+        assert_equal @reader.visit([]), "Visiting an array"
       end
     end
 
-    describe '.remove_visit_method' do
+    describe ".remove_visit_method" do
       it do
         Reader.class_eval do
           def_visit Page do
-            'Printing'
+            "Printing"
           end
         end
         Reader.remove_visit_method(Page)
@@ -174,7 +174,7 @@ describe Eavi::Visitor do
       end
     end
 
-    describe '.visit_methods' do
+    describe ".visit_methods" do
       it do
         assert_equal Reader.visit_methods.size, 0
 
@@ -191,13 +191,13 @@ describe Eavi::Visitor do
       end
     end
 
-    describe '.reset_visit_methods' do
+    describe ".reset_visit_methods" do
       it do
         assert_empty Reader.visit_methods
 
         Reader.class_eval do
           def_visit Page, Array, Hash do
-            'Printing'
+            "Printing"
           end
         end
 
@@ -209,7 +209,7 @@ describe Eavi::Visitor do
       end
     end
 
-    describe '.visitable_types' do
+    describe ".visitable_types" do
       it do
         assert_empty Reader.visitable_types
 
@@ -227,14 +227,14 @@ describe Eavi::Visitor do
     end
   end
 
-  describe 'when extended' do
+  describe "when extended" do
     before :each do
       Printer.reset_visit_methods
       @page = Page.new
       @nice_page = NicePage.new
     end
 
-    it 'respects the interface' do
+    it "respects the interface" do
       assert_respond_to Printer, :visit
       assert_respond_to Printer, :alias_visit_method
       assert_respond_to Printer, :add_visit_method
@@ -244,49 +244,49 @@ describe Eavi::Visitor do
       assert_respond_to Printer, :visitable_types
     end
 
-    it 'has a DSL' do
+    it "has a DSL" do
       assert_respond_to Printer, :def_visit
       assert_respond_to Printer, :undef_visit
     end
 
-    describe '.visit' do
-      it 'call the visit method for the appropriate type' do
+    describe ".visit" do
+      it "call the visit method for the appropriate type" do
         Printer.class_eval do
           def_visit Page do
-            'Printing'
+            "Printing"
           end
         end
 
-        assert_equal Printer.visit(@page), 'Printing'
-        assert_equal Printer.visit(@nice_page), 'Printing'
-        assert_equal NicePrinter.visit(@page), 'Printing'
-        assert_equal NicePrinter.visit(@nice_page), 'Printing'
+        assert_equal Printer.visit(@page), "Printing"
+        assert_equal Printer.visit(@nice_page), "Printing"
+        assert_equal NicePrinter.visit(@page), "Printing"
+        assert_equal NicePrinter.visit(@nice_page), "Printing"
       end
 
-      it 'visit as something else if asked explicitly' do
+      it "visit as something else if asked explicitly" do
         Printer.class_eval do
           def_visit Page do
-            'As page'
+            "As page"
           end
 
           def_visit String do
-            'As string'
+            "As string"
           end
         end
 
-        assert_equal Printer.visit(@page, as: String), 'As string'
+        assert_equal Printer.visit(@page, as: String), "As string"
       end
 
-      it 'raises error when trying to visit without visit method' do
+      it "raises error when trying to visit without visit method" do
         assert_empty Printer.visit_methods
 
         assert_raises Eavi::NoVisitMethodError do
-          Printer.visit('string')
+          Printer.visit("string")
         end
 
         Printer.class_eval do
           def_visit Page do
-            'Reading'
+            "Reading"
           end
         end
 
@@ -295,7 +295,7 @@ describe Eavi::Visitor do
         end
       end
 
-      it 'has self as the singleton visitor in blocks (with first arg)' do
+      it "has self as the singleton visitor in blocks (with first arg)" do
         Printer.class_eval do
           def_visit Page do |_|
             self
@@ -305,7 +305,7 @@ describe Eavi::Visitor do
         assert_same Printer.visit(@page), Printer
       end
 
-      it 'has self as the singleton visitor in blocks (without first arg)' do
+      it "has self as the singleton visitor in blocks (without first arg)" do
         Printer.class_eval do
           def_visit Page do
             self
@@ -315,7 +315,7 @@ describe Eavi::Visitor do
         assert_same Printer.visit(@page), Printer
       end
 
-      it 'can return arguments (not a copy)' do
+      it "can return arguments (not a copy)" do
         Printer.class_eval do
           def_visit Page do |page|
             page
@@ -325,14 +325,14 @@ describe Eavi::Visitor do
         assert_same Printer.visit(@page), @page
       end
 
-      it 'uses the following arguments of given blocks' do
+      it "uses the following arguments of given blocks" do
         Printer.class_eval do
           def_visit String do |_, a, b|
             { a: a, b: b }
           end
         end
 
-        assert_equal Printer.visit('something', 1, 2), { a: 1, b: 2 }
+        assert_equal Printer.visit("something", 1, 2), { a: 1, b: 2 }
 
         Printer.class_eval do
           def_visit String do |_, *args|
@@ -340,11 +340,11 @@ describe Eavi::Visitor do
           end
         end
 
-        assert_equal Printer.visit('something', 1, 2), [1, 2]
+        assert_equal Printer.visit("something", 1, 2), [1, 2]
       end
     end
 
-    describe '.alias_visit_method' do
+    describe ".alias_visit_method" do
       it do
         Printer.class_eval do
           alias_visit_method :print
@@ -356,7 +356,7 @@ describe Eavi::Visitor do
       end
     end
 
-    describe '.add_visit_method' do
+    describe ".add_visit_method" do
       it do
         assert_raises Eavi::NoVisitMethodError do
           Printer.visit([])
@@ -364,19 +364,19 @@ describe Eavi::Visitor do
 
         Printer.class_eval do
           def_visit Array do
-            'Visiting an array'
+            "Visiting an array"
           end
         end
 
-        assert_equal Printer.visit([]), 'Visiting an array'
+        assert_equal Printer.visit([]), "Visiting an array"
       end
     end
 
-    describe '.remove_visit_method' do
+    describe ".remove_visit_method" do
       it do
         Printer.class_eval do
           def_visit Page do
-            'Printing'
+            "Printing"
           end
         end
         Printer.remove_visit_method(Page)
@@ -387,7 +387,7 @@ describe Eavi::Visitor do
       end
     end
 
-    describe '.visit_methods' do
+    describe ".visit_methods" do
       it do
         assert_empty Printer.visit_methods
 
@@ -404,13 +404,13 @@ describe Eavi::Visitor do
       end
     end
 
-    describe '.reset_visit_methods' do
+    describe ".reset_visit_methods" do
       it do
         assert_empty Printer.visit_methods
 
         Printer.class_eval do
           def_visit Page, Array, Hash do
-            'Printing'
+            "Printing"
           end
         end
 
@@ -422,7 +422,7 @@ describe Eavi::Visitor do
       end
     end
 
-    describe '.visitable_types' do
+    describe ".visitable_types" do
       it do
         assert_equal Printer.visitable_types.size, 0
 

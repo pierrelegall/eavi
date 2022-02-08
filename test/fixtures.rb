@@ -1,4 +1,4 @@
-require_relative '../lib/eavi/visitor'
+require_relative "../lib/eavi/visitor"
 
 # A type of visitors
 class Reader

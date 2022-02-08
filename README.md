@@ -22,7 +22,7 @@ class Jsonifier
   include Eavi::Visitor
 
   def_visit String do |object|
-    '"' + object.to_s + '"'
+    %!"#{object}"!
   end
 
   def_visit Integer, Float do |object|
@@ -30,35 +30,26 @@ class Jsonifier
   end
 
   def_visit Array do |array|
-    '[' + array.map { |e| visit(e) }.join(',') + ']'
+    "[" + array.map { |e| visit(e) }.join(",") + "]"
   end
 
   def_visit Hash do |hash|
-    '{' + hash.map do |key, value|
-      visit(key, as: String) + ':' + visit(value)
-    end.join(',') + '}'
+    "{" + hash.map do |key, value|
+      visit(key, as: String) + ":" + visit(value)
+    end.join(",") + "}"
   end
 end
 
 jsonifier = Jsonifier.new
-jsonifier.visit('foo')                         #=> '"foo"'
+jsonifier.visit("foo")                         #=> '"foo"'
 jsonifier.visit(5)                             #=> '5'
 jsonifier.visit(7.5)                           #=> '7.5'
-jsonifier.visit([1, 2.5, 'bar'])               #=> '[1,2.5,"bar"]'
-jsonifier.visit({ a: 3, b: 4.5, c: 'baz' })    #=> '{"a":3,"b":4.5,"c":"baz"}'
-jsonifier.visit({ value: { a: 1, b: 'boo' } }) #=> '{"value":{"a":1,"b":"boo"}}'
+jsonifier.visit([1, 2.5, "bar"])               #=> '[1,2.5,"bar"]'
+jsonifier.visit({ a: 3, b: 4.5, c: "baz" })    #=> '{"a":3,"b":4.5,"c":"baz"}'
+jsonifier.visit({ value: { a: 1, b: "boo" } }) #=> '{"value":{"a":1,"b":"boo"}}'
 
 jsonifier.visit(/this is a cool gem/)
 #=> raises "no visit method in #<Jsonifier:...> for Regexp instances (Eavi::NoVisitMethodError)"
-
-class Jsonifier
-  def_visit Object do |object|
-    raise "#{self} cannot handle #{object.class} objects"
-  end
-end
-
-jsonifier.visit(/this is a cool gem/)
-#=> raises "#<Jsonifier:...> cannot handle Regexp objects (RuntimeError)"
 ```
 
 You can **build a visitor module/class** too, using `extend` instead of `include`:
@@ -80,10 +71,6 @@ module Jsonifier
   extend Eavi::Visitor
 
   alias_visit_method :serialize
-
-  def_serialize String do |object|
-    '"' + object.to_s + '"'
-  end
 
   # […]
 end

@@ -1,5 +1,5 @@
-require_relative 'visit_method_helper'
-require_relative 'no_visit_method_error'
+require_relative "visit_method_helper"
+require_relative "no_visit_method_error"
 
 module Eavi
   # Extend a module/class or include a class with Visitor
@@ -103,8 +103,8 @@ module Eavi
 
       def specialized_alias_visit_method(visit_method_alias)
         define_method(visit_method_alias, instance_method(:visit))
-        define_singleton_method(('def_' + visit_method_alias.to_s).to_sym, method(:def_visit))
-        define_singleton_method(('undef_' + visit_method_alias.to_s).to_sym, method(:undef_visit))
+        define_singleton_method(("def_#{visit_method_alias}").to_sym, method(:def_visit))
+        define_singleton_method(("undef_#{visit_method_alias}").to_sym, method(:undef_visit))
       end
 
       def specialized_add_visit_method(type, block)
@@ -132,8 +132,8 @@ module Eavi
 
       def specialized_alias_visit_method(visit_method_alias)
         define_singleton_method(visit_method_alias, method(:visit))
-        define_singleton_method(('def_' + visit_method_alias.to_s).to_sym, method(:def_visit))
-        define_singleton_method(('undef_' + visit_method_alias.to_s).to_sym, method(:undef_visit))
+        define_singleton_method(("def_#{visit_method_alias}").to_sym, method(:def_visit))
+        define_singleton_method(("undef_#{visit_method_alias}").to_sym, method(:undef_visit))
       end
 
       def specialized_add_visit_method(type, block)
